@@ -1,24 +1,38 @@
-function getStatFromPokedex(poke, statName) {
-    // Assuming the variable name is "POKEDEX_SV_NATDEX" in pokedex.js
-    if (typeof POKEDEX_SV_NATDEX !== 'undefined') {
-        const pokemonData = POKEDEX_SV_NATDEX[poke];
-        if (pokemonData && pokemonData.bs && typeof pokemonData.bs[statName] !== 'undefined') {
-            return pokemonData.bs[statName];
+function getStatFromPokedex(poke) {
+    const statNames = ["hp", "at", "df", "sa", "sd", "sp"];
+    const pokemonData = POKEDEX_SV_NATDEX?.[poke.name];
+
+    if (pokemonData) {
+        poke.t1 = pokemonData.t1;
+        poke.t2 = pokemonData.t2 ?? '';
+        poke.bs = {};
+
+        for (const statName of statNames) {
+            const statValue = pokemonData.bs?.[statName];
+            if (typeof statValue !== 'undefined') {
+                poke.bs[statName] = statValue;
+            }
         }
     }
-    return null; // Pokémon data not found or stat not available
 }
 
 function formatParsedData(parsedData) {
-    const statNames = ["hp", "at", "df", "sa", "sd", "sp"];
+    parsedData.forEach(getStatFromPokedex); // Populate base stats for each pokemon
 
     const formattedOutput = parsedData.map((block, index) => {
-        const stats = statNames.map(statName => getStatFromPokedex(block.pkmn, statName)).join(" / ");
+        const stats = Object.values(block.bs).join(" / "); // Combine base stats
         const statText = stats ? ` (${stats})` : '';
-        return `${block.pkmn || '-'}${statText}<br>`;
+        const typeText = block.t2 ? `${block.t1} / ${block.t2}` : block.t1 || '?';
+        return `
+          <table>
+            <tr>
+              <td>${block.name || '-'}<br>${typeText}<br>${statText}</td>
+            </tr>
+          </table>
+        `;
     }).join('');
 
-    return formattedOutput;
+    return `<table><tr>${formattedOutput}</tr></table>`;
 }
 
 document.getElementById("processButton").addEventListener("click", function() {
@@ -32,3 +46,4 @@ document.getElementById("processButton").addEventListener("click", function() {
     const outputElement = document.getElementById("outputText");
     outputElement.innerHTML = formattedOutput; // Use innerHTML to render HTML tags
 });
+
