@@ -20,13 +20,35 @@ function formatParsedData(parsedData) {
     parsedData.forEach(getStatFromPokedex); // Populate base stats for each pokemon
 
     const formattedOutput = parsedData.map((block, index) => {
-        const stats = Object.values(block.bs).join(" / "); // Combine base stats
-        const statText = stats ? ` (${stats})` : '';
+        const base = Object.values(block.bs).join(" / ");
+        const baseText = base ? ` (${base})` : '';
         const typeText = block.t2 ? `${block.t1} / ${block.t2}` : block.t1 || '?';
+        const teraType = block.teratype ? `${block.teratype}` : `${block.t1}`;
+        const moveText = `
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width: 50%;">${block.moves[0] || ''}</td>
+                    <td style="width: 50%;">${block.moves[2] || ''}</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">${block.moves[1] || ''}</td>
+                    <td style="width: 50%;">${block.moves[3] || ''}</td>
+                </tr>
+            </table>
+        `;
+
         return `
           <table>
             <tr>
-              <td>${block.name || '-'}<br>${typeText}<br>${statText}</td>
+              <td class="poke-display">
+                ${block.name || '-'}
+                <span style="float: right;">${typeText} | ${teraType}</span><br>
+                ${block.ability || ''}
+                <span style="float: right;">${block.item || 'no item'}</span><br>
+                ${baseText}
+                <span style="float: right;">${block.nature || 'no nature'}</span><br>
+                ${moveText}
+              </td>
             </tr>
           </table>
         `;
@@ -46,4 +68,3 @@ document.getElementById("processButton").addEventListener("click", function() {
     const outputElement = document.getElementById("outputText");
     outputElement.innerHTML = formattedOutput; // Use innerHTML to render HTML tags
 });
-

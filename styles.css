@@ -30,4 +30,10 @@ body {
     height: 50vh; /* Set the textarea's height as 50% of the viewport height */
 }
 
-/* Rest of your existing styles */
+.poke-display {
+    border: 2px solid #000; /* Set the border width and color */
+    border-radius: 10px; /* Set the border radius for rounded corners */
+    padding: 10px; /* Add padding to create some space around the content */
+    width: 256px; /* Set the desired width */
+    font-size: 12px; /* Adjust the font size as needed */
+}
