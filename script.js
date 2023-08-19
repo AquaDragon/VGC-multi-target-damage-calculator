@@ -1,7 +1,9 @@
 function formatParsedData(parsedData) {
     const formattedOutput = parsedData.map((poke, index) => {
-        const base = Object.values(poke.bs).join(" / ");
-        const baseText = base ? ` (${base})` : '';
+        // const base = Object.values(poke.bs).join(" / ");
+        // const baseText = base ? ` (${base})` : '';
+        const stat = Object.values(poke.stat).join(" / ");
+        const statText = stat ? ` ${stat}` : '';
         const typeText = poke.t2 ? `${poke.t1} / ${poke.t2}` : poke.t1 || '?';
         const teraType = poke.teratype ? `${poke.teratype}` : `${poke.t1}`;
         const moveText = `
@@ -21,11 +23,11 @@ function formatParsedData(parsedData) {
           <table>
             <tr>
               <td class="poke-display">
-                ${poke.name || '-'}
+                <b>${poke.name || '-'}</b>
                 <span style="float: right;">${typeText} | ${teraType}</span><br>
                 ${poke.ability || ''}
                 <span style="float: right;">${poke.item || 'no item'}</span><br>
-                ${baseText}
+                ${statText}
                 <span style="float: right;">${poke.nature || 'no nature'}</span><br>
                 ${moveText}
               </td>

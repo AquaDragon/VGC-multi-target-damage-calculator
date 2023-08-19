@@ -1,5 +1,5 @@
 class PokeInfo {
-    constructor(name, item, level, ability, nature, teratype, moves, evs = {}, ivs = {}, ) {
+    constructor(name, item, level, ability, nature, teratype, moves, evs = {}, ivs = {}) {
         this.name = name;
         this.item = item;
         this.level = level;
@@ -25,20 +25,21 @@ class PokeInfo {
             "sp": 31,
             ...ivs // Merge provided ivs with defaults
         };
-        
+
+        this.stat = {}; // Initialize the stat object
         this.fetchDataFromPokedex();
+        this.calcHP();
+        this.calcStats();
     }
 
-    // Method to fetch data from the Pokédex
     fetchDataFromPokedex() {
-        // Implement this method to retrieve data from your data source
         const pokemonData = POKEDEX_SV_NATDEX?.[this.name];
         
         if (pokemonData) {
             this.t1 = pokemonData.t1;
             this.t2 = pokemonData.t2 || '';
             this.bs = {};
-            
+
             const statNames = ["hp", "at", "df", "sa", "sd", "sp"];
             for (const statName of statNames) {
                 const statValue = pokemonData.bs?.[statName];
@@ -48,11 +49,41 @@ class PokeInfo {
             }
         }
     }
+
+    calcHP() {
+        const base = this.bs.hp;
+        if (base === 1) {
+            this.stat.hp = 1;
+        } else {
+            const level = ~~this.level;
+            const evs = ~~this.evs.hp;
+            const ivs = ~~this.ivs.hp;
+            const totalHP = Math.floor((base * 2 + ivs + Math.floor(evs / 4)) * level / 100) + level + 10;
+            this.stat.hp = totalHP;
+        }
+    }
+
+    calcStats() {
+        const statNames = ["at", "df", "sa", "sd", "sp"];
+        const level = ~~this.level;
+
+        for (const statName of statNames) {
+            const base = ~~this.bs[statName];
+            const evs = ~~this.evs[statName];
+            const ivs = ~~this.ivs[statName];
+            const natureMods = NATURES[this.nature];
+            const nature = natureMods[0] === statName ? 1.1 : natureMods[1] === statName ? 0.9 : 1;
+            const total = Math.floor((Math.floor((base * 2 + ivs + Math.floor(evs / 4)) * level / 100) + 5) * nature);
+            this.stat[statName] = total;
+        }
+    }
 }
 
-function parseStats(parts, targetObj, targetKey) {
-    targetObj[targetKey] = {}; // Initialize the target object key as an empty object
 
+function parseStats(spread, statObj) {
+    // Format is like: "4 HP / 252 Atk / 252 Spe"
+    // statObj: the default EV/IV object 
+    
     const sub = {
         'HP': 'hp',
         'Atk': 'at',
@@ -62,10 +93,10 @@ function parseStats(parts, targetObj, targetKey) {
         'Spe': 'sp'
     };
 
-    parts.forEach(part => {
-        const [value, stat] = part.trim().split(' ');
-        const statKey = sub[stat] || stat.substring(0, 2).toUpperCase();
-        targetObj[targetKey][statKey] = parseInt(value);
+    spread.split('/').forEach(part => {
+        const [value, stat] = part.trim().split(' ');    // Split number & stat name
+        const statKey = sub[stat];
+        statObj[statKey] = parseInt(value);    // Update the specific EV/IV stat
     });
 }
 
@@ -77,26 +108,21 @@ function parseInputText(inputText) {
 
     for (let index = 0; index <= 5 && index < blocks.length; index++) {
         const lines = blocks[index].split('\n');
-
         const [nameItemLine, ...dataLines] = lines.map(line => line.trim());
         const [name, item] = nameItemLine.split(' @ ');
 
-        // Extract other properties using the class constructor
-        const evs = {}; // Initialize evs as an empty object
-        const ivs = {}; // Initialize ivs as an empty object
-
-        let level = 100; // Initialize level
-        let nature = ''; // Initialize nature
-        let ability = ''; // Initialize ability
-        let teratype = ''; // Initialize teratype
-        let moves = []; // Initialize moves
+        let ability = '';
+        let level = 100;
+        let teratype = '';
+        let evs = {};
+        let nature = '';
+        let ivs = {};
+        let moves = [];
 
         dataLines.forEach(line => {
             const trimmedLine = line.trim();
-            
             const splitLine = trimmedLine.split(' ');
 
-            // Check lines for nature
             if (splitLine.length >= 2 && splitLine[splitLine.length - 1] === 'Nature') {
                 nature = splitLine[0];
             } else {
@@ -106,11 +132,11 @@ function parseInputText(inputText) {
                 if (normalizedKey === 'level') {
                     level = parseInt(value);
                 } else if (normalizedKey === 'evs') {
-                    parseStats(value.split('/'), evs, 'evs');
+                    parseStats(value, evs);
                 } else if (normalizedKey === 'ivs') {
-                    parseStats(value.split('/'), ivs, 'ivs');
+                    parseStats(value, ivs);
                 } else if (trimmedLine.startsWith('- ')) {
-                    moves.push(trimmedLine.substring(2));    // Moves
+                    moves.push(trimmedLine.substring(2));
                 } else if (normalizedKey === 'ability') {
                     ability = value;
                 } else if (normalizedKey === 'teratype') {
