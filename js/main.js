@@ -1,3 +1,16 @@
+document.getElementById("processButton").addEventListener("click", function() {
+    const inputText = document.getElementById("textInput").value;
+    const parsedResult = parseInputText(inputText);
+
+    // Print parsed data to the console for debugging
+    console.log(parsedResult);
+
+    const formattedOutput = formatParsedData(parsedResult);
+    const outputElement = document.getElementById("outputText");
+    outputElement.innerHTML = formattedOutput;
+});
+
+
 function formatParsedData(parsedData) {
     const formattedOutput = parsedData.map((poke, index) => {
         // const base = Object.values(poke.bs).join(" / ");
@@ -38,15 +51,3 @@ function formatParsedData(parsedData) {
 
     return `<table><tr>${formattedOutput}</tr></table>`;
 }
-
-document.getElementById("processButton").addEventListener("click", function() {
-    const inputText = document.getElementById("textInput").value;
-    const parsedResult = parseInputText(inputText);
-
-    // Print parsed data to the console for debugging
-    console.log(parsedResult);
-
-    const formattedOutput = formatParsedData(parsedResult);
-    const outputElement = document.getElementById("outputText");
-    outputElement.innerHTML = formattedOutput; // Use innerHTML to render HTML tags
-});
