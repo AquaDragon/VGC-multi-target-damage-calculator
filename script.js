@@ -1,38 +1,18 @@
-function getStatFromPokedex(poke) {
-    const statNames = ["hp", "at", "df", "sa", "sd", "sp"];
-    const pokemonData = POKEDEX_SV_NATDEX?.[poke.name];
-
-    if (pokemonData) {
-        poke.t1 = pokemonData.t1;
-        poke.t2 = pokemonData.t2 ?? '';
-        poke.bs = {};
-
-        for (const statName of statNames) {
-            const statValue = pokemonData.bs?.[statName];
-            if (typeof statValue !== 'undefined') {
-                poke.bs[statName] = statValue;
-            }
-        }
-    }
-}
-
 function formatParsedData(parsedData) {
-    parsedData.forEach(getStatFromPokedex); // Populate base stats for each pokemon
-
-    const formattedOutput = parsedData.map((block, index) => {
-        const base = Object.values(block.bs).join(" / ");
+    const formattedOutput = parsedData.map((poke, index) => {
+        const base = Object.values(poke.bs).join(" / ");
         const baseText = base ? ` (${base})` : '';
-        const typeText = block.t2 ? `${block.t1} / ${block.t2}` : block.t1 || '?';
-        const teraType = block.teratype ? `${block.teratype}` : `${block.t1}`;
+        const typeText = poke.t2 ? `${poke.t1} / ${poke.t2}` : poke.t1 || '?';
+        const teraType = poke.teratype ? `${poke.teratype}` : `${poke.t1}`;
         const moveText = `
             <table style="width: 100%;">
                 <tr>
-                    <td style="width: 50%;">${block.moves[0] || ''}</td>
-                    <td style="width: 50%;">${block.moves[2] || ''}</td>
+                    <td style="width: 50%;">${poke.moves[0] || ''}</td>
+                    <td style="width: 50%;">${poke.moves[2] || ''}</td>
                 </tr>
                 <tr>
-                    <td style="width: 50%;">${block.moves[1] || ''}</td>
-                    <td style="width: 50%;">${block.moves[3] || ''}</td>
+                    <td style="width: 50%;">${poke.moves[1] || ''}</td>
+                    <td style="width: 50%;">${poke.moves[3] || ''}</td>
                 </tr>
             </table>
         `;
@@ -41,12 +21,12 @@ function formatParsedData(parsedData) {
           <table>
             <tr>
               <td class="poke-display">
-                ${block.name || '-'}
+                ${poke.name || '-'}
                 <span style="float: right;">${typeText} | ${teraType}</span><br>
-                ${block.ability || ''}
-                <span style="float: right;">${block.item || 'no item'}</span><br>
+                ${poke.ability || ''}
+                <span style="float: right;">${poke.item || 'no item'}</span><br>
                 ${baseText}
-                <span style="float: right;">${block.nature || 'no nature'}</span><br>
+                <span style="float: right;">${poke.nature || 'no nature'}</span><br>
                 ${moveText}
               </td>
             </tr>
