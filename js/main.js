@@ -10,16 +10,41 @@ document.getElementById("processButton").addEventListener("click", function() {
     outputElement.innerHTML = formattedOutput;
 });
 
-
 function formatParsedData(parsedData) {
     const formattedOutput = parsedData.map((poke, index) => {
-        // const base = Object.values(poke.bs).join(" / ");
-        // const baseText = base ? ` (${base})` : '';
         const stat = Object.values(poke.stat).join(" / ");
-        const statText = stat ? ` ${stat}` : '';
-        const typeText = poke.t2 ? `${poke.t1} / ${poke.t2}` : poke.t1 || '?';
+        const statDisplay = stat ? ` ${stat}` : '';
+
         const teraType = poke.teratype ? `${poke.teratype}` : `${poke.t1}`;
-        const moveText = `
+        const typeDisplay = `
+            <img
+                src="https://play.pokemonshowdown.com/sprites/types/${poke.t1}.png"
+                alt="${poke.t1}"
+            >
+            ${poke.t2 ? `
+                <img
+                    src="https://play.pokemonshowdown.com/sprites/types/${poke.t2}.png"
+                    alt=" / ${poke.t2}"
+                >` : ''}
+            <img
+                src="https://play.pokemonshowdown.com/sprites/types/Tera${teraType}.png"
+                alt="${teraType}"
+                style="height: 25px;"
+            >`;
+
+        const formattedItemName = poke.item
+            ? poke.item.toLowerCase().replace(/\s+/g, '-')
+            : 'no-item';
+        const itemSourceURL = `https://github.com/PokeAPI/sprites/blob/master/sprites/items/`;
+        const itemDisplay = `
+            <img
+                src="${itemSourceURL}${formattedItemName}.png?raw=true"
+                alt="${formattedItemName}"
+                title="${poke.item || 'no item'}"
+                onerror="this.src='${itemSourceURL}data-card-01.png?raw=true'"
+            >`;
+
+        const moveTable = `
             <table style="width: 100%;">
                 <tr>
                     <td style="width: 50%;">${poke.moves[0] || ''}</td>
@@ -33,21 +58,25 @@ function formatParsedData(parsedData) {
         `;
 
         return `
-          <table>
             <tr>
-              <td class="poke-display">
-                <b>${poke.name || '-'}</b>
-                <span style="float: right;">${typeText} | ${teraType}</span><br>
-                ${poke.ability || ''}
-                <span style="float: right;">${poke.item || 'no item'}</span><br>
-                ${statText}
-                <span style="float: right;">${poke.nature || 'no nature'}</span><br>
-                ${moveText}
-              </td>
+                <td class="display-cell">
+                    <div>
+                        <div class="poke-name-display">${poke.name || '-'}</div>
+                        <div class="item-display">${itemDisplay}</div>
+                        <div class="type-display">${typeDisplay}</div>
+                    </div>
+                    <div>
+                        <div>${poke.ability || ''}</div>
+                    </div>
+                    <div>
+                        <div class="stat-display">${statDisplay}</div>
+                        <div>${poke.nature || 'no nature'}</div>
+                    </div>
+                    ${moveTable}
+                </td>
             </tr>
-          </table>
         `;
     }).join('');
 
-    return `<table><tr>${formattedOutput}</tr></table>`;
+    return `<table>${formattedOutput}</table>`;
 }

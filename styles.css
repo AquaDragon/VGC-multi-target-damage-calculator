@@ -1,4 +1,6 @@
 /* styles.css */
+
+/* Positioning */
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -30,10 +32,44 @@ body {
     height: 50vh; /* Set the textarea's height as 50% of the viewport height */
 }
 
-.poke-display {
+/* Cell containing pokemon information */
+.display-cell {
+    width: 280px; /* Set the desired width */
+    padding: 4px 8px; /* Add padding to create some space around the content */
     border: 2px solid #000; /* Set the border width and color */
     border-radius: 10px; /* Set the border radius for rounded corners */
-    padding: 10px; /* Add padding to create some space around the content */
-    width: 256px; /* Set the desired width */
     font-size: 12px; /* Adjust the font size as needed */
 }
+
+.display-cell > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.poke-name-display {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.stat-display {
+    font-size: 14px;
+}
+
+.item-display {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Align items to the right */
+}
+
+.type-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.type-display > img {
+    padding: 0 1px;
+}
+
+
