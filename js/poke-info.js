@@ -66,12 +66,12 @@ class PokeInfo {
     calcStats() {
         const statNames = ["at", "df", "sa", "sd", "sp"];
         const level = ~~this.level;
+        const natureMods = this.nature ? NATURES[this.nature] : ['',''];
 
         for (const statName of statNames) {
             const base = ~~this.bs[statName];
             const evs = ~~this.evs[statName];
             const ivs = ~~this.ivs[statName];
-            const natureMods = this.nature ? NATURES[this.nature] : ['',''];
             const nature = natureMods[0] === statName ? 1.1 : natureMods[1] === statName ? 0.9 : 1;
             const total = Math.floor((Math.floor((base * 2 + ivs + Math.floor(evs / 4)) * level / 100) + 5) * nature);
             this.stat[statName] = total;

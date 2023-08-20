@@ -34,11 +34,11 @@ body {
 
 /* Cell containing pokemon information */
 .display-cell {
-    width: 280px; /* Set the desired width */
+    width: 264px; /* Set the desired width */
     padding: 4px 8px; /* Add padding to create some space around the content */
     border: 2px solid #000; /* Set the border width and color */
     border-radius: 10px; /* Set the border radius for rounded corners */
-    font-size: 12px; /* Adjust the font size as needed */
+    font-size: 14px; /* Adjust the font size as needed */
 }
 
 .display-cell > div {
@@ -48,8 +48,9 @@ body {
 }
 
 .poke-name-display {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
+    padding: 2px 0;
 }
 
 .stat-display {
@@ -59,7 +60,8 @@ body {
 .item-display {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Align items to the right */
+/*    justify-content: flex-end; /* Align items to the right */*/
+/*    padding: 0 50px;*/
 }
 
 .type-display {
@@ -72,4 +74,16 @@ body {
     padding: 0 1px;
 }
 
+.move-display {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns of equal width */
+    gap: 2px 10px;
+    width: 90%;
+}
+
+.move-display > div {
+    padding: 1px;
+    border: 0px solid #ccc;
+/*    background-color: #f9f9f9;*/
+}
 

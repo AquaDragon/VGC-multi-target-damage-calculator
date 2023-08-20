@@ -12,8 +12,21 @@ document.getElementById("processButton").addEventListener("click", function() {
 
 function formatParsedData(parsedData) {
     const formattedOutput = parsedData.map((poke, index) => {
-        const stat = Object.values(poke.stat).join(" / ");
-        const statDisplay = stat ? ` ${stat}` : '';
+        const statEntries = Object.entries(poke.stat);
+        const statDisplay = statEntries.map(([statName, statValue]) => {
+            // Determine the color based on the statName and statValue
+            let statStyle = "";
+
+            const natureMods = poke.nature ? NATURES[poke.nature] : ['',''];
+            const nature = natureMods[0] === statName ? 1.1 : natureMods[1] === statName ? 0.9 : 1;
+            if (nature === 1.1) {
+                statStyle = "color: #006400; font-weight: bold;"; // Nature-boosting stat in green + bold
+            } else if (nature === 0.9) {
+                statStyle = "color: #FF0000; font-weight: bold;"; // Nature-hindering stat in red + bold
+            }
+            return `<span style="${statStyle}">${statValue}</span>`;
+        }).join(" / ");
+
 
         const teraType = poke.teratype ? `${poke.teratype}` : `${poke.t1}`;
         const typeDisplay = `
@@ -32,47 +45,51 @@ function formatParsedData(parsedData) {
                 style="height: 25px;"
             >`;
 
-        const formattedItemName = poke.item
-            ? poke.item.toLowerCase().replace(/\s+/g, '-')
-            : 'no-item';
-        const itemSourceURL = `https://github.com/PokeAPI/sprites/blob/master/sprites/items/`;
-        const itemDisplay = `
-            <img
-                src="${itemSourceURL}${formattedItemName}.png?raw=true"
-                alt="${formattedItemName}"
-                title="${poke.item || 'no item'}"
-                onerror="this.src='${itemSourceURL}data-card-01.png?raw=true'"
-            >`;
 
-        const moveTable = `
-            <table style="width: 100%;">
-                <tr>
-                    <td style="width: 50%;">${poke.moves[0] || ''}</td>
-                    <td style="width: 50%;">${poke.moves[2] || ''}</td>
-                </tr>
-                <tr>
-                    <td style="width: 50%;">${poke.moves[1] || ''}</td>
-                    <td style="width: 50%;">${poke.moves[3] || ''}</td>
-                </tr>
-            </table>
-        `;
+        const formattedItemName = ITEMS_SV.includes(poke.item)
+            ? poke.item.toLowerCase().replace(/\s+/g, '-')
+            : 'data-card-01';
+        const imgSourceURL = `https://github.com/PokeAPI/sprites/blob/master/sprites/items/`;
+        const altText = ITEMS_SV.includes(poke.item)
+            ? poke.item
+            : poke.item ? 'undefined item (' + poke.item + ')' : 'no item';
+        const itemDisplay = poke.item ? `
+            <img
+                src="${imgSourceURL}${formattedItemName}.png?raw=true"
+                alt="${altText}"
+                title="${altText}"
+                onerror="this.src='${imgSourceURL}data-card-01.png?raw=true'"
+            >` : `—`;
+
+
+        let moveDisplay = "";
+        poke.moves.forEach((move) => {
+            const moveCat = MOVES_SV[move] ? MOVES_SV[move].category : 'undefined';
+            const moveStyle = moveCat === 'Status' ? 'color: #A0A0A0;' : '';
+            const singleMove = `
+                <div style="${moveStyle}">${move}</div>
+            `;
+            moveDisplay += singleMove;
+        });
 
         return `
             <tr>
                 <td class="display-cell">
                     <div>
-                        <div class="poke-name-display">${poke.name || '-'}</div>
+                        <div>
+                            <div class="poke-name-display">${poke.name || '-'}</div>
+                            <div>${poke.ability || ''}</div>
+                        </div>
                         <div class="item-display">${itemDisplay}</div>
                         <div class="type-display">${typeDisplay}</div>
-                    </div>
-                    <div>
-                        <div>${poke.ability || ''}</div>
                     </div>
                     <div>
                         <div class="stat-display">${statDisplay}</div>
                         <div>${poke.nature || 'no nature'}</div>
                     </div>
-                    ${moveTable}
+                    <div>
+                        <div class="move-display">${moveDisplay}</div>
+                    </div>
                 </td>
             </tr>
         `;
