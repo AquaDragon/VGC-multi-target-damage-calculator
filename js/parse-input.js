@@ -30,7 +30,7 @@ function parseInputText(inputText) {
         const [name, item] = nameItemLine.split(' @ ');
 
         let ability = '';
-        let level = 100;
+        let level = 50;    // default set to 50 (different from showdown)
         let teratype = '';
         let evs = {};
         let nature = '';
