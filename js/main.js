@@ -1,15 +1,66 @@
 document.getElementById("processButton").addEventListener("click", function() {
-    const inputText = document.getElementById("textInput").value;
-    const parsedResult = parseInputText(inputText);
+    const inputText1 = document.getElementById("textInput1").value;
+    const parsedResult1 = parseInputText(inputText1);
+    const parsedDataTeamA = formatParsedData(parsedResult1);
 
-    // Print parsed data to the console for debugging
-    console.log(parsedResult);
+    const inputText2 = document.getElementById("textInput2").value;
+    const parsedResult2 = parseInputText(inputText2);
+    const parsedDataTeamB = formatParsedData(parsedResult2);
 
-    const formattedOutput = formatParsedData(parsedResult);
-    const outputElement = document.getElementById("outputText");
-    outputElement.innerHTML = formattedOutput;
+    updateTable(parsedDataTeamA, parsedDataTeamB);
 });
 
+// Function to create a table with specified number of rows and columns
+function createTable(rows, columns) {
+    const table = document.createElement('table');
+    
+    // Create rows and cells for each row
+    for (let row = 0; row <= rows; row++) {
+        const newRow = table.insertRow();
+        for (let col = 0; col <= columns; col++) {
+            const cell = newRow.insertCell();
+            cell.id = `cell-${row}-${col}`;
+            cell.innerHTML = cell.id;
+        }
+    }
+
+    return table;
+}
+
+// Function to populate a cell with content
+function populateCell(row, col, content) {
+    const cellId = `cell-${row}-${col}`;
+    const cell = document.getElementById(cellId);
+    if (cell) {
+        cell.innerHTML = content;
+    }
+}
+
+// Function to update the table based on parsed data
+function updateTable(parsedDataTeamA, parsedDataTeamB) {
+    const tableContainer = document.getElementById('tableContainer');
+    
+    // Clear existing content
+    tableContainer.innerHTML = '';
+    
+    // Create a table with rows for Team A and columns for Team B
+    const table = createTable(parsedDataTeamA.length, parsedDataTeamB.length);
+
+    // Append the table to the container
+    tableContainer.appendChild(table);
+    
+    // Populate cells with parsed data for Team A
+    for (let row = 1; row <= parsedDataTeamA.length; row++) {
+        const contentA = parsedDataTeamA[row - 1];
+        populateCell(row, 0, contentA);
+    }
+
+    // Populate cells with parsed data for Team B
+    for (let col = 1; col <= parsedDataTeamB.length; col++) {
+        const contentB = parsedDataTeamB[col - 1];
+        populateCell(0, col, contentB);
+    }
+}
 
 function formatParsedData(parsedData) {
     const formattedOutput = parsedData.map((poke, index) => {
@@ -103,7 +154,7 @@ function formatParsedData(parsedData) {
         }).join('');
 
 
-        const formatPokeName = poke.name.toLowerCase().replace(/\s+/g, '');
+        const formatPokeName = poke.name.toLowerCase().replace(/[-\s]+/g, '');
         const pokeDisplay = `
             <img
                 src="https://play.pokemonshowdown.com/sprites/gen5/${formatPokeName}.png"
@@ -112,7 +163,7 @@ function formatParsedData(parsedData) {
 
             //<div class="text-display">${poke.nature || 'no nature'}</div>
         return `
-            <tr>
+            <table>
                 <td class="display-cell">
                     <div>
                         <div>
@@ -130,9 +181,8 @@ function formatParsedData(parsedData) {
                         <div class="poke-display">${pokeDisplay}</div>
                     </div>
                 </td>
-            </tr>
-        `;
-    }).join('');
+            </table>`;
+    });
 
-    return `<table>${formattedOutput}</table>`;
+    return formattedOutput;
 }
