@@ -1,4 +1,4 @@
-class PokeInfo {
+class PokemonInfo {
     constructor(name, item, level, ability, nature, teratype, moves, evs = {}, ivs = {}) {
         this.name = name;
         this.item = item;

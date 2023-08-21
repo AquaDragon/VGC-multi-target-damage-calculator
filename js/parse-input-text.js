@@ -18,6 +18,7 @@ function parseStats(spread, statObj) {
     });
 }
 
+
 function parseInputText(inputText) {
     inputText = inputText.trim();
     
@@ -63,7 +64,7 @@ function parseInputText(inputText) {
             }
         });
 
-        const poke = new PokeInfo(name, item, level, ability, nature, teratype, moves, evs, ivs);
+        const poke = new PokemonInfo(name, item, level, ability, nature, teratype, moves, evs, ivs);
         parsedData.push(poke);
     }
 
