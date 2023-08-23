@@ -3,8 +3,14 @@ document.getElementById("processButton").addEventListener("click", function() {
     const inputTextB = document.getElementById("textInputB").value;
 
     // Check if any of the input boxes is empty
-    if (inputTextA.trim() === "" || inputTextB.trim() === "") {
-        displaySystemMessage("Please input the PokePaste for both teams.", true);
+    if (inputTextA.trim() === "" && inputTextB.trim() === "") {
+        displaySystemMessage("Please input PokePastes for both teams.", true);
+        return;
+    } else if (inputTextA.trim() === "") {
+        displaySystemMessage("Please input a PokePaste for Team A.", true);
+        return;
+    } else if (inputTextB.trim() === "") {
+        displaySystemMessage("Please input a PokePaste for Team B.", true);
         return;
     }
 

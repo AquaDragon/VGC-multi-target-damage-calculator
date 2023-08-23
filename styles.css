@@ -19,6 +19,7 @@ body {
     margin: 10px;
     width: 60%;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .input-section hr {

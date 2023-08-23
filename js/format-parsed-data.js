@@ -25,9 +25,9 @@ function formatParsedData(parsedTeamData) {
             } else if (nature === 0.9) {
                 statStyle += "color: #F08080; font-weight: bold;";
             }
-            // Italicize if stat is unused
+            // Strikethrough if stat is unused
             if (statName === "at" && noPhysicalMoves || statName === "sa" && noSpecialMoves) {
-                statStyle += "font-style: italic";
+                statStyle += "text-decoration: line-through;";
             }
             return `<span style="${statStyle}">${statValue}</span>`;
         }).join(" / ");
