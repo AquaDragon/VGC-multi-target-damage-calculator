@@ -56,6 +56,12 @@ body {
     justify-content: center;
 }
 
+.system-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
 /* Cell containing pokemon information */
 .display-cell {
     width: 264px; /* Set the desired width */
