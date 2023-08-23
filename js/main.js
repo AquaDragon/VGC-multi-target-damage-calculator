@@ -1,20 +1,17 @@
 document.getElementById("processButton").addEventListener("click", function() {
-    const inputText1 = document.getElementById("textInput1").value;
-    const inputText2 = document.getElementById("textInput2").value;
+    const inputTextA = document.getElementById("textInputA").value;
+    const inputTextB = document.getElementById("textInputB").value;
 
     // Check if any of the input boxes is empty
-    if (inputText1.trim() === "" || inputText2.trim() === "") {
+    if (inputTextA.trim() === "" || inputTextB.trim() === "") {
         displaySystemMessage("Please input the PokePaste for both teams.", true);
         return;
     }
 
-    const parsedResult1 = parseInputText(inputText1);
-    const parsedDataTeamA = formatParsedData(parsedResult1);
+    const parsedDataTeamA = parseInputText(inputTextA);
+    const parsedDataTeamB = parseInputText(inputTextB);
 
-    const parsedResult2 = parseInputText(inputText2);
-    const parsedDataTeamB = formatParsedData(parsedResult2);
-
-    updateTable(parsedDataTeamA, parsedDataTeamB);
+    populateTable(parsedDataTeamA, parsedDataTeamB);
 
     displaySystemMessage("");  // Clear any previous system messages
 });

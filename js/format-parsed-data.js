@@ -1,5 +1,5 @@
-function formatParsedData(parsedData) {
-    const formattedOutput = parsedData.map((poke, index) => {
+function formatParsedData(parsedTeamData) {
+    const formattedOutput = parsedTeamData.map((poke, index) => {
         // Get category of all moves, used to format stat and moves later
         let moveCats = [];
         poke.moves.forEach((move) => {
@@ -75,9 +75,10 @@ function formatParsedData(parsedData) {
             let singleMove = '';
             if (moveCat) {
                 const backgroundStyle = `background-color: ${moveColor}`;
+                const checkSpecial = moveCat === 'Status' ? `color: white` : '';
                 singleMove = `
                     <div>
-                        <div class="move-display-text">${move}</div>
+                        <div class="move-display-text" style="${checkSpecial}">${move}</div>
                         <div class="move-display-background" style="${backgroundStyle}"></div>
                     </div>
                 `;
