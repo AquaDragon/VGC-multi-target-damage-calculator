@@ -1,7 +1,7 @@
 function parseStats(spread, statObj) {
     // Format is like: "4 HP / 252 Atk / 252 Spe"
     // statObj: the default EV/IV object 
-    
+
     const sub = {
         'HP': 'hp',
         'Atk': 'at',
@@ -12,16 +12,16 @@ function parseStats(spread, statObj) {
     };
 
     spread.split('/').forEach(part => {
-        const [value, stat] = part.trim().split(' ');    // Split number & stat name
+        const [value, stat] = part.trim().split(' '); // Split number & stat name
         const statKey = sub[stat];
-        statObj[statKey] = parseInt(value);    // Update the specific EV/IV stat
+        statObj[statKey] = parseInt(value); // Update the specific EV/IV stat
     });
 }
 
 
 function parseInputText(inputText) {
     inputText = inputText.trim();
-    
+
     const blocks = inputText.split('\n\n');
     const parsedData = [];
 
@@ -31,7 +31,7 @@ function parseInputText(inputText) {
         const [name, item] = nameItemLine.split(' @ ');
 
         let ability = '';
-        let level = 50;    // default set to 50 (different from showdown)
+        let level = 50; // default set to 50 (different from showdown)
         let teratype = '';
         let evs = {};
         let nature = '';

@@ -1,8 +1,7 @@
 // Functions associated with creating the crosstable display
-
 function createTable(rows, columns) {
     const table = document.createElement('table');
-    
+
     // Create rows and cells for each row
     for (let row = 0; row <= rows; row++) {
         const newRow = table.insertRow();
@@ -33,15 +32,15 @@ function updateCell(row, col, content) {
 // Populate the table with parsed team data
 function populateTable(parsedDataTeamA, parsedDataTeamB) {
     const tableContainer = document.getElementById('tableContainer');
-    tableContainer.innerHTML = '';    // Clear existing content
-    
+    tableContainer.innerHTML = ''; // Clear existing content
+
     // Create a table with rows for Team A and columns for Team B
     const table = createTable(parsedDataTeamA.length, parsedDataTeamA.length);
-    tableContainer.appendChild(table);    // Append the table to the container
+    tableContainer.appendChild(table); // Append the table to the container
 
     const htmlOutputTeamA = formatParsedData(parsedDataTeamA);
     const htmlOutputTeamB = formatParsedData(parsedDataTeamB);
-    
+
     // Populate 1st column with Team A data
     for (let row = 1; row <= parsedDataTeamA.length; row++) {
         updateCell(row, 0, htmlOutputTeamA[row - 1]);
@@ -55,7 +54,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
     for (let row = 1; row <= parsedDataTeamA.length; row++) {
         for (let col = 1; col <= parsedDataTeamB.length; col++) {
             const pokenameA = parsedDataTeamA[row - 1].name;
-            const pokenameB = parsedDataTeamB[col -1].name;
+            const pokenameB = parsedDataTeamB[col - 1].name;
 
             const content = `
                 <div class='crosstable-cell'>

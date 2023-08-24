@@ -1,18 +1,20 @@
 /* Layout */
 body {
     font-family: Arial, Helvetica, sans-serif;
-    margin: 0; /* Reset default margin */
+    margin: 0;
+    /* Reset default margin */
 }
 
 #app {
-    overflow: auto; /* Enable scrolling if content overflows */
+    overflow: auto;
+    /* Enable scrolling if content overflows */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     box-sizing: border-box;
-    padding: 20px; /* Add some padding around the content */
+    padding: 20px;
 }
 
 .input-section {
@@ -23,9 +25,11 @@ body {
 }
 
 .input-section hr {
-    margin: 20px 0; /* Adjust margin as needed */
-    border: none; /* Remove default border */
-    border-top: 1px solid #e0e0e0; /* Set a lighter color for the border */
+    margin: 20px 0;
+    border: none;
+    /* Remove default border */
+    border-top: 1px solid #e0e0e0;
+    /* Set a lighter color for the border */
 }
 
 .output-section {
@@ -63,15 +67,15 @@ body {
 
 /* Cells containing Pokemon information */
 .display-cell {
-    width: 225px; /* Set the desired width */
-    padding: 4px 8px; /* Add padding to create some space around the content */
-    border: 2px solid #000; /* Set the border width and color */
-    border-radius: 10px; /* Set the border radius for rounded corners */
-    font-size: 12px; /* Adjust the font size as needed */
+    width: 225px;
+    padding: 4px 8px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    font-size: 12px;
     position: relative;
 }
 
-.display-cell > div {
+.display-cell>div {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -81,11 +85,11 @@ body {
     font-size: 14px;
     font-weight: bold;
     padding: 2px 0;
-/*    background-color: #f9f9f9;*/
+    /*    background-color: #f9f9f9;*/
 }
 
 .text-display {
-/*    background-color: #f9f9f9;*/
+    /*    background-color: #f9f9f9;*/
 }
 
 .item-display {
@@ -105,7 +109,7 @@ body {
     justify-content: center;
 }
 
-.type-display > img {
+.type-display>img {
     padding: 0 1px;
 }
 
@@ -118,14 +122,14 @@ body {
     vertical-align: middle;
 }
 
-.move-display > div {
+.move-display>div {
     padding: 1px;
     border: 0px solid #ccc;
     font-weight: 600;
     position: relative;
 }
 
-.move-display > div::before {
+.move-display>div::before {
     content: "";
     position: absolute;
     top: 0;
@@ -151,8 +155,10 @@ body {
     align-items: center;
     justify-content: center;
     display: flex;
-    position: relative; /* Add this to adjust text position */
-    z-index: 1; /* Bring text above the background */
+    position: relative;
+    /* Add this to adjust text position */
+    z-index: 1;
+    /* Bring text above the background */
 }
 
 .poke-display {

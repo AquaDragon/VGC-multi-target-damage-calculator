@@ -34,7 +34,7 @@ class PokemonInfo {
 
     fetchDataFromPokedex() {
         const pokemonData = POKEDEX_SV_NATDEX?.[this.name];
-        
+
         if (pokemonData) {
             this.t1 = pokemonData.t1;
             this.t2 = pokemonData.t2 || '';
@@ -66,7 +66,7 @@ class PokemonInfo {
     calcStats() {
         const statNames = ["at", "df", "sa", "sd", "sp"];
         const level = ~~this.level;
-        const natureMods = this.nature ? NATURES[this.nature] : ['',''];
+        const natureMods = this.nature ? NATURES[this.nature] : ['', ''];
 
         for (const statName of statNames) {
             const base = ~~this.bs[statName];
