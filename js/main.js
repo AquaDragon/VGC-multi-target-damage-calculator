@@ -23,7 +23,6 @@ document.getElementById("processButton").addEventListener("click", function() {
 });
 
 
-// Function to display a system message
 function displaySystemMessage(message, isError = false) {
     const systemMessageElement = document.getElementById("systemMessage");
     systemMessageElement.textContent = message;
@@ -33,4 +32,13 @@ function displaySystemMessage(message, isError = false) {
     } else {
         systemMessageElement.classList.remove("error");
     }
+}
+
+function swapInputValues() {
+    const textareaA = document.getElementById("textInputA");
+    const textareaB = document.getElementById("textInputB");
+
+    const tempValue = textareaA.value;
+    textareaA.value = textareaB.value;
+    textareaB.value = tempValue;
 }
