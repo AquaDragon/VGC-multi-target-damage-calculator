@@ -91,8 +91,12 @@ body {
 .item-display {
     display: flex;
     align-items: center;
-/*    justify-content: flex-end; /* Align items to the right */*/
-/*    padding: 0 50px;*/
+}
+
+.item-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
 }
 
 .type-display {

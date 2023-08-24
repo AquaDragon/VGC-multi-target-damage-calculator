@@ -4,14 +4,14 @@ function formatParsedData(parsedTeamData) {
         let moveCats = [];
         poke.moves.forEach((move) => {
             if (move === 'Tera Blast' && poke.stat.at > poke.stat.sa) {
-                moveCats.push("Physical"); 
+                moveCats.push("Physical");
             } else {
                 moveCats.push(MOVES_SV[move] ? MOVES_SV[move].category : null);
             }
         });
 
         const statEntries = Object.entries(poke.stat);
-        const natureMods = poke.nature ? NATURES[poke.nature] : ['',''];
+        const natureMods = poke.nature ? NATURES[poke.nature] : ['', ''];
         const noPhysicalMoves = !moveCats.includes("Physical");
         const noSpecialMoves = !moveCats.includes("Special");
 
@@ -51,20 +51,11 @@ function formatParsedData(parsedTeamData) {
             >`;
 
 
-        const formattedItemName = ITEMS_SV.includes(poke.item)
-            ? poke.item.toLowerCase().replace(/\s+/g, '-')
-            : 'data-card-01';
-        const imgSourceURL = `https://github.com/PokeAPI/sprites/blob/master/sprites/items/`;
-        const altText = ITEMS_SV.includes(poke.item)
-            ? poke.item
-            : poke.item ? 'undefined item (' + poke.item + ')' : 'no item';
-        const itemDisplay = poke.item ? `
-            <img
-                src="${imgSourceURL}${formattedItemName}.png?raw=true"
-                alt="${altText}"
-                title="${altText}"
-                onerror="this.src='${imgSourceURL}data-card-01.png?raw=true'"
-            >` : `—`;
+        const itemDisplay = ITEMS_SV.includes(poke.item) ?
+            `<span class='item-icon' style="${getItemIcon(poke.item)}" title="${poke.item}"></span>` :
+            poke.item ?
+            `<span style="font-weight: bold; font-size: 2em;" title="undefined item (${poke.item})">?</span>` :
+            '';
 
 
         const moveDisplay = poke.moves.map((move) => {
@@ -98,7 +89,7 @@ function formatParsedData(parsedTeamData) {
                 alt="${poke.name}"
             >`;
 
-            //<div class="text-display">${poke.nature || 'no nature'}</div>
+        //<div class="text-display">${poke.nature || 'no nature'}</div>
         return `
             <table>
                 <td class="display-cell">
