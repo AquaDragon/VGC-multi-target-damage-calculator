@@ -3,14 +3,14 @@ function formatParsedData(parsedTeamData) {
         // Get category of all moves, used to format stat and moves later
         let moveCats = [];
         poke.moves.forEach((move) => {
-            if (move === 'Tera Blast' && poke.stat.at > poke.stat.sa) {
+            if (move === 'Tera Blast' && poke.stats.at > poke.stats.sa) {
                 moveCats.push("Physical");
             } else {
                 moveCats.push(MOVES_SV[move] ? MOVES_SV[move].category : null);
             }
         });
 
-        const statEntries = Object.entries(poke.stat);
+        const statEntries = Object.entries(poke.stats);
         const natureMods = poke.nature ? NATURES[poke.nature] : ['', ''];
         const noPhysicalMoves = !moveCats.includes("Physical");
         const noSpecialMoves = !moveCats.includes("Special");
@@ -33,16 +33,16 @@ function formatParsedData(parsedTeamData) {
         }).join(" / ");
 
 
-        const teraType = poke.teratype ? `${poke.teratype}` : `${poke.t1}`;
+        const teraType = poke.tera_type ? `${poke.tera_type}` : `${poke.type1}`;
         const typeDisplay = `
             <img
-                src="https://play.pokemonshowdown.com/sprites/types/${poke.t1}.png"
-                alt="${poke.t1}"
+                src="https://play.pokemonshowdown.com/sprites/types/${poke.type1}.png"
+                alt="${poke.type1}"
             >
-            ${poke.t2 ? `
+            ${poke.type2 ? `
                 <img
-                    src="https://play.pokemonshowdown.com/sprites/types/${poke.t2}.png"
-                    alt=" / ${poke.t2}"
+                    src="https://play.pokemonshowdown.com/sprites/types/${poke.type2}.png"
+                    alt=" / ${poke.type2}"
                 >` : ''}
             <img
                 src="https://play.pokemonshowdown.com/sprites/types/Tera${teraType}.png"
@@ -58,7 +58,8 @@ function formatParsedData(parsedTeamData) {
             '';
 
 
-        const moveDisplay = poke.moves.map((move) => {
+        const moveDisplay = poke.moves.map((moveEntry) => {
+            const move = moveEntry.name;
             const moveCat = MOVES_SV[move] ? MOVES_SV[move].category : null;
             const moveType = MOVES_SV[move] ? MOVES_SV[move].type : null;
             const moveColor = typeColors[moveType] || "transparent";
