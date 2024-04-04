@@ -1,0 +1,15 @@
+{
+  "name": "vgc-multi-target-damage-calculator",
+  "version": "1.0.0",
+  "description": "This is a tool currently in development for performing quick damage calculations against multiple targets. It is intended to help with teambuilding, matchup planning and exploring various battle scenarios.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
+}
