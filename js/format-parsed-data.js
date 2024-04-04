@@ -83,7 +83,8 @@ function formatParsedData(parsedTeamData) {
         }).join('');
 
 
-        const formatPokeName = poke.name.toLowerCase().replace(/[-\s]+/g, '');
+        const formatPokeName = poke.name.toLowerCase().replace(/[\s]+/g, '');
+        // don't remove hyphen for alternate forme sprites
         const pokeDisplay = `
             <img
                 src="https://play.pokemonshowdown.com/sprites/gen5/${formatPokeName}.png"

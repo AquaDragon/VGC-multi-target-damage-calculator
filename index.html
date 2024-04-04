@@ -12,10 +12,14 @@
                 <div class="input-box">
                     <label for="textInputA">Team A PokePaste:</label>
                     <textarea id="textInputA" class="text-input" rows="10" cols="30"></textarea>
+                    <button class="input-clear-button" onclick="clearTextInput('textInputA')">Clear</button>
+                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputA')">Input Random Team</button>
                 </div>
                 <div class="input-box">
                     <label for="textInputB">Team B PokePaste:</label>
                     <textarea id="textInputB" class="text-input" rows="10" cols="30"></textarea>
+                    <button class="input-clear-button" onclick="clearTextInput('textInputB')">Clear</button>
+                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputB')">Input Random Team</button>
                 </div>
             </div>
             <button id="swapButton" onclick="swapInputValues()">⇄ Swap PokePastes</button>
