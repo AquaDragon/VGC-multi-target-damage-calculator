@@ -1,45 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>Pokémon VGC Multi-Target Damage Calculator</title>
-    <link rel="stylesheet" type="text/css" href="assets/styles.css">
-</head>
+    <link rel="stylesheet" type="text/css" href="assets/styles.css" />
+  </head>
 
-<body>
+  <body>
     <h1>Pokémon VGC Multi-Target Damage Calculator</h1>
     <div id="app">
-        <div class="input-section">
-            <div class="input-row">
-                <div class="input-box">
-                    <label for="textInputB">Your Team's PokePaste:</label>
-                    <textarea id="textInputB" class="text-input" rows="10" cols="30"></textarea>
-                    <button class="input-clear-button" onclick="clearTextInput('textInputB')">Clear</button>
-                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputB')">Input Random Team</button>
-                </div>
-                <div class="input-box">
-                    <label for="textInputA">Other Team's PokePaste:</label>
-                    <textarea id="textInputA" class="text-input" rows="10" cols="30"></textarea>
-                    <button class="input-clear-button" onclick="clearTextInput('textInputA')">Clear</button>
-                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputA')">Input Random Team</button>
-                </div>
-            </div>
-            <button id="swapButton" onclick="swapInputValues()">⇄ Swap PokePastes</button>
-            <button id="processButton">Load PokePastes & Construct Table</button>
-            <hr>
+      <div class="input-section">
+        <div class="input-row">
+          <div class="input-box">
+            <label for="textInputB">Your Team's PokePaste:</label>
+            <textarea id="textInputB" class="text-input" rows="10" cols="30"></textarea>
+            <button class="input-clear-button" onclick="clearTextInput('textInputB')">Clear</button>
+            <button class="input-random-team-button" onclick="inputRandomTeam('textInputB')">Input Random Team</button>
+          </div>
+          <div class="input-box">
+            <label for="textInputA">Other Team's PokePaste:</label>
+            <textarea id="textInputA" class="text-input" rows="10" cols="30"></textarea>
+            <button class="input-clear-button" onclick="clearTextInput('textInputA')">Clear</button>
+            <button class="input-random-team-button" onclick="inputRandomTeam('textInputA')">Input Random Team</button>
+          </div>
         </div>
-        <div class="system-message" id="systemMessage">
-            <!-- System messages will be displayed here -->
+        <button id="swapButton" onclick="swapInputValues()">⇄ Swap PokePastes</button>
+        <button id="processButton">Load PokePastes & Construct Table</button>
+        <hr />
+      </div>
+      <div class="system-message" id="systemMessage">
+        <!-- System messages will be displayed here -->
+      </div>
+      <div class="output-row">
+        <div class="output-section">
+          <div id="tableContainer">
+            <!-- The dynamically created table will go here -->
+            <p id="outputText">The crosstable will appear here once the PokePastes have been loaded.</p>
+          </div>
         </div>
-        <div class="output-row">
-            <div class="output-section">
-                <div id="tableContainer">
-                    <!-- The dynamically created table will go here -->
-                    <p id="outputText">The crosstable will appear here once the PokePastes have been loaded.</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -62,6 +61,5 @@
     <script src="js/format-parsed-data.js"></script>
     <script src="js/crosstable.js"></script>
     <script src="js/main.js"></script>
-</body>
-
+  </body>
 </html>

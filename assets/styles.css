@@ -82,7 +82,7 @@ h1 {
   position: relative;
 }
 
-.display-cell>div {
+.display-cell > div {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -116,7 +116,7 @@ h1 {
   justify-content: center;
 }
 
-.type-display>img {
+.type-display > img {
   padding: 0 1px;
 }
 
@@ -129,15 +129,15 @@ h1 {
   vertical-align: middle;
 }
 
-.move-display>div {
+.move-display > div {
   padding: 1px;
   border: 0px solid #ccc;
   font-weight: 600;
   position: relative;
 }
 
-.move-display>div::before {
-  content: "";
+.move-display > div::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;

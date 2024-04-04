@@ -14,8 +14,8 @@ var SHOWDOWN_TO_DMGCALC_NAMES = {
   'Calyrex-Shadow': 'Calyrex-Shadow Rider',
   'Dudunsparce-Three-Segment': 'Dudunsparce-Big',
   'Gimmighoul-Roaming': 'Gimmighoul-Roam',
-  'Indeedee': 'Indeedee-M',
-  'Lycanroc': 'Lycanroc-Midday',
-  'Oricorio': 'Oricorio-Baile',
-  'Urshifu': 'Urshifu-Single Strike',
+  Indeedee: 'Indeedee-M',
+  Lycanroc: 'Lycanroc-Midday',
+  Oricorio: 'Oricorio-Baile',
+  Urshifu: 'Urshifu-Single Strike',
 };

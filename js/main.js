@@ -1,54 +1,53 @@
-document.getElementById("processButton").addEventListener("click", function() {
-    const inputTextA = document.getElementById("textInputA").value;
-    const inputTextB = document.getElementById("textInputB").value;
+document.getElementById('processButton').addEventListener('click', function () {
+  const inputTextA = document.getElementById('textInputA').value;
+  const inputTextB = document.getElementById('textInputB').value;
 
-    // Check if any of the input boxes is empty
-    if (inputTextA.trim() === "" && inputTextB.trim() === "") {
-        displaySystemMessage("Please input PokePastes for both teams.", true);
-        return;
-    } else if (inputTextA.trim() === "") {
-        displaySystemMessage("Please input a PokePaste for Team A.", true);
-        return;
-    } else if (inputTextB.trim() === "") {
-        displaySystemMessage("Please input a PokePaste for Team B.", true);
-        return;
-    }
+  // Check if any of the input boxes is empty
+  if (inputTextA.trim() === '' && inputTextB.trim() === '') {
+    displaySystemMessage('Please input PokePastes for both teams.', true);
+    return;
+  } else if (inputTextA.trim() === '') {
+    displaySystemMessage('Please input a PokePaste for Team A.', true);
+    return;
+  } else if (inputTextB.trim() === '') {
+    displaySystemMessage('Please input a PokePaste for Team B.', true);
+    return;
+  }
 
-    const parsedDataTeamA = parseInputText(inputTextA);
-    const parsedDataTeamB = parseInputText(inputTextB);
+  const parsedDataTeamA = parseInputText(inputTextA);
+  const parsedDataTeamB = parseInputText(inputTextB);
 
-    populateTable(parsedDataTeamA, parsedDataTeamB);
+  populateTable(parsedDataTeamA, parsedDataTeamB);
 
-    displaySystemMessage("");  // Clear any previous system messages
+  displaySystemMessage(''); // Clear any previous system messages
 });
 
-
 function displaySystemMessage(message, isError = false) {
-    const systemMessageElement = document.getElementById("systemMessage");
-    systemMessageElement.textContent = message;
+  const systemMessageElement = document.getElementById('systemMessage');
+  systemMessageElement.textContent = message;
 
-    if (isError) {
-        systemMessageElement.classList.add("error");
-    } else {
-        systemMessageElement.classList.remove("error");
-    }
+  if (isError) {
+    systemMessageElement.classList.add('error');
+  } else {
+    systemMessageElement.classList.remove('error');
+  }
 }
 
 function swapInputValues() {
-    const textareaA = document.getElementById("textInputA");
-    const textareaB = document.getElementById("textInputB");
+  const textareaA = document.getElementById('textInputA');
+  const textareaB = document.getElementById('textInputB');
 
-    const tempValue = textareaA.value;
-    textareaA.value = textareaB.value;
-    textareaB.value = tempValue;
+  const tempValue = textareaA.value;
+  textareaA.value = textareaB.value;
+  textareaB.value = tempValue;
 }
 
 function clearTextInput(inputId) {
-    document.getElementById(inputId).value = "";
+  document.getElementById(inputId).value = '';
 }
 
 function inputRandomTeam(inputId) {
-    document.getElementById(inputId).value = `Tornadus @ Focus Sash
+  document.getElementById(inputId).value = `Tornadus @ Focus Sash
 Ability: Prankster
 Level: 50
 Tera Type: Ghost
@@ -119,5 +118,4 @@ IVs: 0 Atk
 }
 
 // get rid of lame error message from imports/dmgcalc/ap_calc.js
-function checkaprilfools() {
-}
+function checkaprilfools() {}
