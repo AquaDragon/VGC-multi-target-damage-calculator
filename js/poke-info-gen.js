@@ -57,7 +57,7 @@ class PokemonInfo {
     }
 
     fetchDataFromPokedex() {
-        const pokemonData = POKEDEX_SV_NATDEX?.[this.name];
+        const pokemonData = POKEDEX_SV_NATDEX?.[this.name] || POKEDEX_SV_NATDEX?.[SHOWDOWN_TO_DMGCALC_NAMES[this.name]];
 
         if (pokemonData) {
             this.type1 = pokemonData.t1;

@@ -141,6 +141,8 @@ function dummyField() {
     var isTailwind = [false, false];
     var isSaltCure = [false, false];
     var isAuroraVeil = [false, false];
+    var isSwamp = [false, false];
+    var isSeaFire = [false, false];
 
     this.getNeutralGas = function () {
         return isNeutralizingGas;
@@ -154,6 +156,9 @@ function dummyField() {
     this.getTerrain = function() {
         return terrain;
     };
+    this.getSwamp = function (i) {
+        return isSwamp[i];
+    }
     this.clearWeather = function() {
         weather = "";
     };
