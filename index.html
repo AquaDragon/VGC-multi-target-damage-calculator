@@ -2,24 +2,27 @@
 <html>
 
 <head>
+    <meta charset="UTF-8" />
+    <title>Pokémon VGC Multi-Target Damage Calculator</title>
     <link rel="stylesheet" type="text/css" href="assets/styles.css">
 </head>
 
 <body>
+    <h1>Pokémon VGC Multi-Target Damage Calculator</h1>
     <div id="app">
         <div class="input-section">
             <div class="input-row">
                 <div class="input-box">
-                    <label for="textInputA">Team A PokePaste:</label>
-                    <textarea id="textInputA" class="text-input" rows="10" cols="30"></textarea>
-                    <button class="input-clear-button" onclick="clearTextInput('textInputA')">Clear</button>
-                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputA')">Input Random Team</button>
-                </div>
-                <div class="input-box">
-                    <label for="textInputB">Team B PokePaste:</label>
+                    <label for="textInputB">Your Team's PokePaste:</label>
                     <textarea id="textInputB" class="text-input" rows="10" cols="30"></textarea>
                     <button class="input-clear-button" onclick="clearTextInput('textInputB')">Clear</button>
                     <button class="input-random-team-button" onclick="inputRandomTeam('textInputB')">Input Random Team</button>
+                </div>
+                <div class="input-box">
+                    <label for="textInputA">Other Team's PokePaste:</label>
+                    <textarea id="textInputA" class="text-input" rows="10" cols="30"></textarea>
+                    <button class="input-clear-button" onclick="clearTextInput('textInputA')">Clear</button>
+                    <button class="input-random-team-button" onclick="inputRandomTeam('textInputA')">Input Random Team</button>
                 </div>
             </div>
             <button id="swapButton" onclick="swapInputValues()">⇄ Swap PokePastes</button>
@@ -43,6 +46,7 @@
     <script src="assets/typecolors.js"></script>
     <script src="imports/ps/spritefunc.js"></script>
     <script src="imports/ps/items.js"></script>
+    <script src="imports/dmgcalc/select2.min.js"></script>
     <script src="imports/dmgcalc/pokedex.js"></script>
     <script src="imports/dmgcalc/ability_data.js"></script>
     <script src="imports/dmgcalc/item_data.js"></script>

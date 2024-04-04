@@ -1,11 +1,18 @@
-# js-gui
-
-Coding Practice: Creating a GUI Using JavaScript
-
-This GUI generates a cross-table showing all relevant damage calculations between two Pokémon teams given inputs of two PokePastes or Pokémon Showdown!-formatted text inputs containing Pokémon team information. 
-It is optimized for VGC teams in Pokémon Scarlet & Violet.
+# Pokémon VGC Multi-Target Damage Calculator
 
 https://aquadragon.github.io/js-gui/
+
+This is a tool currently in development for performing quick damage calculations against multiple targets. It is intended to help with teambuilding, matchup planning and exploring various battle scenarios.
+
+The current inputs are two teams formatted in PokePastes or Pokémon Showdown!-styled text. The GUI will then generate a cross-table showing all relevant damage calculations between the two teams.
+
+Planned features in development / to-do list:
+- Reorganize layout & presentation
+- Interface to allow editing of team information
+- Statistics
+- Allow calculations vs. more than 6 Pokémon
+
+Optimized for VGC formats in Pokémon Scarlet & Violet.
 
 ![image](https://github.com/AquaDragon/js-gui/assets/22651173/9b2612f6-db15-4f51-98d3-db4b213114d8)
 

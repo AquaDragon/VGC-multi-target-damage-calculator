@@ -28,7 +28,7 @@ function createTable(rows, columns) {
             if (row === 0 && col === 0) {
                 cell.innerHTML = `
                     <div class='crosstable-cell'>
-                        <p style="text-align: right;">Team B →</p> Team A ↓
+                        <p style="text-align: right;">Your Team →</p> Other Team ↓
                     </div>`;
             }
         }
