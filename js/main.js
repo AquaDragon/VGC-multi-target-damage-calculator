@@ -117,3 +117,7 @@ IVs: 0 Atk
 - Thunderbolt
 - Power Gem`;
 }
+
+// get rid of lame error message from imports/dmgcalc/ap_calc.js
+function checkaprilfools() {
+}
