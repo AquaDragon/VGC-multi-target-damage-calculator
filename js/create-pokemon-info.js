@@ -104,34 +104,38 @@ class PokemonInfo {
 
   // Load move details so it may be read by damage calc
   getMoveDetails(moveName) {
-    var defaultDetails = MOVES_SV[moveName];
-    return $.extend(
-      {},
-      {
-        name: moveName,
-        bp: ~~defaultDetails.bp,
-        type: defaultDetails.type,
-        category: defaultDetails.category,
-        isCrit: 0,
-        isZ: 0,
-        hits: defaultDetails.isMultiHit
-          ? 5 // 2 to 5
-          : defaultDetails.isTenMultiHit
-            ? 10
-            : moveName == 'Dragon Darts'
-              ? 2
-              : defaultDetails.isTwoHit
+    if (MOVES_SV[moveName]) {
+      var moveDetails = MOVES_SV[moveName];
+      return $.extend(
+        {},
+        {
+          name: moveName,
+          bp: ~~moveDetails.bp,
+          type: moveDetails.type,
+          category: moveDetails.category,
+          isCrit: 0,
+          isZ: 0,
+          hits: moveDetails.isMultiHit
+            ? 5 // 2 to 5
+            : moveDetails.isTenMultiHit
+              ? 10
+              : moveName == 'Dragon Darts'
                 ? 2
-                : defaultDetails.isThreeHit
-                  ? 3
-                  : moveName == 'Beat Up'
-                    ? 4
-                    : 1,
-        isDouble: defaultDetails.canDouble ? 2 : 0,
-        tripleHits: defaultDetails.isTripleHit ? 3 : 0,
-        combinePledge: moveName.includes(' Pledge') ? moveInfo.find('.move-pledge').val() : 0,
-        timesAffected: ['Last Respects', 'Rage Fist'].indexOf(moveName) != -1 ? 1 : 0,
-      }
-    ); // MOVES_SV[move]
+                : moveDetails.isTwoHit
+                  ? 2
+                  : moveDetails.isThreeHit
+                    ? 3
+                    : moveName == 'Beat Up'
+                      ? 4
+                      : 1,
+          isDouble: moveDetails.canDouble ? 2 : 0,
+          tripleHits: moveDetails.isTripleHit ? 3 : 0,
+          combinePledge: moveName.includes(' Pledge') ? moveInfo.find('.move-pledge').val() : 0,
+          timesAffected: ['Last Respects', 'Rage Fist'].indexOf(moveName) != -1 ? 1 : 0,
+        }
+      ); // MOVES_SV[move]
+    } else {
+      return null;
+    }
   }
 }

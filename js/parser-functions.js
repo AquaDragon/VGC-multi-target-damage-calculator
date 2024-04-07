@@ -1,5 +1,5 @@
 function parseStats(spread, statObj) {
-  // Format is like: "4 HP / 252 Atk / 252 Spe"
+  // Input format is like: "4 HP / 252 Atk / 252 Spe"
   // statObj: the default EV/IV object
 
   const sub = {

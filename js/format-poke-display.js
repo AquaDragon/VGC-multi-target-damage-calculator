@@ -1,13 +1,12 @@
-function formatPokeDisplay(teamData) {
+function formatPokeDisplay(teamData, whichteam) {
   const formattedOutput = teamData.map((poke, index) => {
     // Get category of all moves, used to format stat and moves later
     let moveCats = [];
     poke.moves.forEach((move) => {
-      if (move === 'Tera Blast' && poke.stats.at > poke.stats.sa) {
+      if (move.name === 'Tera Blast' && poke.stats.at > poke.stats.sa) {
         moveCats.push('Physical');
       } else {
-        console.log(move.category);
-        moveCats.push(MOVES_SV[move] ? MOVES_SV[move].category : null);
+        moveCats.push(move.category ? move.category : null);
       }
     });
 
@@ -28,12 +27,32 @@ function formatPokeDisplay(teamData) {
           statStyle += 'color: #F08080; font-weight: bold;';
         }
         // Strikethrough if stat is unused
-        console.log(statName, noPhysicalMoves, noSpecialMoves);
         if ((statName === 'at' && noPhysicalMoves) || (statName === 'sa' && noSpecialMoves)) {
           statStyle += 'text-decoration: line-through;';
         }
         return `<span style="${statStyle}">${statValue}</span>`;
       })
+      .join(' / ');
+
+    const evEntries = Object.entries(poke.evs);
+    const evDisplay = evEntries
+      .map(([evName, evValue]) => {
+        const sub = {
+          hp: 'HP',
+          at: 'Atk',
+          df: 'Def',
+          sa: 'SpA',
+          sd: 'SpD',
+          sp: 'Spe',
+        };
+        const statName = sub[evName];
+        if (evValue > 0) {
+          return `${evValue} ${statName}`;
+        } else {
+          return '';
+        }
+      })
+      .filter((item) => item !== '')
       .join(' / ');
 
     const teraType = poke.tera_type ? `${poke.tera_type}` : `${poke.type1}`;
@@ -71,20 +90,27 @@ function formatPokeDisplay(teamData) {
         const moveColor = typeColors[moveType] || 'transparent';
 
         let singleMove = '';
+        let backgroundStyle = '';
+        let checkSpecial = '';
+
         if (moveCat) {
-          const backgroundStyle = `background-color: ${moveColor}`;
-          const checkSpecial = moveCat === 'Status' ? `color: white` : '';
+          if ((whichteam === 'B' && mode === 'defense') || (whichteam === 'A' && mode === 'attack')) {
+            checkSpecial = `color: ${moveColor}`;
+          } else {
+            backgroundStyle = moveCat === 'Status' ? '' : `background-color: ${moveColor}`;
+            checkSpecial = moveCat === 'Status' ? `color: ${moveColor}` : '';
+          }
+
           singleMove = `
-                    <div>
-                        <div class="move-display-text" style="${checkSpecial}">${move}</div>
-                        <div class="move-display-background" style="${backgroundStyle}"></div>
-                    </div>
-                `;
+            <div>
+                <div class="move-display-text" style="${checkSpecial}">${move}</div>
+                <div class="move-display-background" style="${backgroundStyle}"></div>
+            </div>
+          `;
         } else {
-          singleMove = `
-                    <div>?</div>
-                `;
+          singleMove = `<div>?</div>`;
         }
+
         return singleMove;
       })
       .join('');
@@ -92,32 +118,40 @@ function formatPokeDisplay(teamData) {
     const formatPokeName = poke.name.toLowerCase().replace(/[\s]+/g, '');
     // don't remove hyphen for alternate forme sprites
     const pokeDisplay = `
-            <img
-                src="https://play.pokemonshowdown.com/sprites/gen5/${formatPokeName}.png"
-                alt="${poke.name}"
-            >`;
+      <img
+          src="https://play.pokemonshowdown.com/sprites/gen5/${formatPokeName}.png"
+          alt="${poke.name}"
+      >`;
 
-    //<div class="text-display">${poke.nature || 'no nature'}</div>
+    // Change what is displayed depending on the team
+    let moveDisplayHTML = '';
+    if (whichteam === 'B' || (whichteam === 'A' && mode === 'defense')) {
+      moveDisplayHTML = `<div class="move-display">${moveDisplay}</div>`;
+    }
+
     return `
-            <table>
-                <td class="display-cell">
-                    <div>
-                        <div>
-                            <div class="poke-name-display">${poke.name || '-'}</div>
-                            <div class="text-display">${poke.ability || ''}</div>
-                        </div>
-                        <div class="item-display">${itemDisplay}</div>
-                        <div class="type-display">${typeDisplay}</div>
-                    </div>
-                    <div>
-                        <div class="text-display">${statDisplay}</div>
-                    </div>
-                    <div>
-                        <div class="move-display">${moveDisplay}</div>
-                        <div class="poke-display">${pokeDisplay}</div>
-                    </div>
-                </td>
-            </table>`;
+      <table>
+        <td class="display-cell">
+          <div>
+            <div class="poke-name-display">${poke.name || '-'}</div>
+          </div>
+          <div>
+            <div class="text-display">${poke.ability || ''}</div>
+            <div class="item-display">${itemDisplay}</div>
+            <div class="type-display">${typeDisplay}</div>
+          </div>
+          <div>
+            <div class="text-display">${statDisplay}</div>
+          </div>
+          <div>
+            <div class="text-display" style="font-size: 0.9em;">(${evDisplay})</div>
+          </div>
+          <div>
+            ${moveDisplayHTML}
+            <div class="poke-display">${pokeDisplay}</div>
+          </div>
+        </td>
+      </table>`;
   });
 
   return formattedOutput;

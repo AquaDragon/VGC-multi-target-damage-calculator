@@ -58,8 +58,8 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
   const table = createTable(parsedDataTeamA.length, parsedDataTeamA.length);
   tableContainer.appendChild(table); // Append the table to the container
 
-  const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA);
-  const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB);
+  const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA, 'A');
+  const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB, 'B');
 
   // Populate 1st column with Team A data
   for (let row = 1; row <= parsedDataTeamA.length; row++) {
