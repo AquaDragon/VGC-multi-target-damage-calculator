@@ -50,12 +50,9 @@ function swapInputValues() {
 }
 
 function switchModes() {
-  var button = document.getElementById('modeSwitchButton');
   if (mode === 'attack') {
     mode = 'defense';
-    button.innerText = 'Switch to Attack Mode';
   } else {
-    button.innerText = 'Switch to Defense Mode';
     mode = 'attack';
   }
   updateTable();
@@ -63,7 +60,9 @@ function switchModes() {
 
 function updateModeLabel() {
   const modeLabelElement = document.getElementById('modeLabel');
-  modeLabelElement.innerHTML = `<h3>${toTitleCase(mode)} Mode</h3>`;
+  const buttonText = mode === 'attack' ? 'Switch to Defense Mode' : 'Switch to Attack Mode';
+  modeLabelElement.innerHTML = `<b style="font-size: calc(1.2 * 1rem);">${toTitleCase(mode)} Mode</b>
+  <button id="modeSwitchButton" onclick="switchModes()">↺ ${buttonText}</button>`;
 }
 
 function clearTextInput(inputId) {
