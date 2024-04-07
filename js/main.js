@@ -1,4 +1,10 @@
+var mode = 'attack';
+
 document.getElementById('processButton').addEventListener('click', function () {
+  updateTable();
+});
+
+function updateTable() {
   const inputTextA = document.getElementById('textInputA').value;
   const inputTextB = document.getElementById('textInputB').value;
 
@@ -19,8 +25,9 @@ document.getElementById('processButton').addEventListener('click', function () {
 
   populateTable(parsedDataTeamA, parsedDataTeamB);
 
+  updateModeLabel();
   displaySystemMessage(''); // Clear any previous system messages
-});
+}
 
 function displaySystemMessage(message, isError = false) {
   const systemMessageElement = document.getElementById('systemMessage');
@@ -40,6 +47,23 @@ function swapInputValues() {
   const tempValue = textareaA.value;
   textareaA.value = textareaB.value;
   textareaB.value = tempValue;
+}
+
+function switchModes() {
+  var button = document.getElementById('modeSwitchButton');
+  if (mode === 'attack') {
+    mode = 'defense';
+    button.innerText = 'Switch to Attack Mode';
+  } else {
+    button.innerText = 'Switch to Defense Mode';
+    mode = 'attack';
+  }
+  updateTable();
+}
+
+function updateModeLabel() {
+  const modeLabelElement = document.getElementById('modeLabel');
+  modeLabelElement.innerHTML = `<h3>${toTitleCase(mode)} Mode</h3>`;
 }
 
 function clearTextInput(inputId) {

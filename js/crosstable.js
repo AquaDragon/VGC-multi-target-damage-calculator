@@ -31,9 +31,9 @@ function createTable(rows, columns) {
 
       if (row === 0 && col === 0) {
         cell.innerHTML = `
-                    <div class='crosstable-cell'>
-                        <p style="text-align: right;">Your Team →</p> Other Team ↓
-                    </div>`;
+          <div class='crosstable-cell'>
+              <p style="text-align: right;">Your Team →</p> Other Team ↓
+          </div>`;
       }
     }
   }
@@ -110,22 +110,25 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
           p2.moves[i].name + ' ' + minDamageB + '-' + maxDamageB[i] + ' (' + minPercent + ' - ' + maxPercent + '%)';
       }
 
-      const content = `
-                <div class='crosstable-cell'>
-                    ${p1.name} (A)<br><small>
-                    ${maxDamageA[0] != 0 && !isNaN(maxDamageA[0]) ? resultA[0].damageText + '<br>' : ''}
-                    ${maxDamageA[1] != 0 && !isNaN(maxDamageA[1]) ? resultA[1].damageText + '<br>' : ''}
-                    ${maxDamageA[2] != 0 && !isNaN(maxDamageA[2]) ? resultA[2].damageText + '<br>' : ''}
-                    ${maxDamageA[3] != 0 && !isNaN(maxDamageA[3]) ? resultA[3].damageText + '<br>' : ''}
-                    </small> vs.
-                    ${p2.name} (B)<br><small>
-                    ${maxDamageB[0] != 0 && !isNaN(maxDamageB[0]) ? resultB[0].damageText + '<br>' : ''}
-                    ${maxDamageB[1] != 0 && !isNaN(maxDamageB[1]) ? resultB[1].damageText + '<br>' : ''}
-                    ${maxDamageB[2] != 0 && !isNaN(maxDamageB[2]) ? resultB[2].damageText + '<br>' : ''}
-                    ${maxDamageB[3] != 0 && !isNaN(maxDamageB[3]) ? resultB[3].damageText + '<br>' : ''}
-                    </small>
-                </div>
-            `;
+      let content;
+      if (mode === 'attack') {
+        content = `
+          <div class='crosstable-cell'><small>
+            ${maxDamageB[0] !== 0 && !isNaN(maxDamageB[0]) ? resultB[0].damageText + '<br>' : ''}
+            ${maxDamageB[1] !== 0 && !isNaN(maxDamageB[1]) ? resultB[1].damageText + '<br>' : ''}
+            ${maxDamageB[2] !== 0 && !isNaN(maxDamageB[2]) ? resultB[2].damageText + '<br>' : ''}
+            ${maxDamageB[3] !== 0 && !isNaN(maxDamageB[3]) ? resultB[3].damageText + '<br>' : ''}
+          </small></div>
+      `;
+      } else {
+        content = `
+          <div class='crosstable-cell'><small>
+            ${maxDamageA[0] !== 0 && !isNaN(maxDamageA[0]) ? resultA[0].damageText + '<br>' : ''}
+            ${maxDamageA[1] !== 0 && !isNaN(maxDamageA[1]) ? resultA[1].damageText + '<br>' : ''}
+            ${maxDamageA[2] !== 0 && !isNaN(maxDamageA[2]) ? resultA[2].damageText + '<br>' : ''}
+            ${maxDamageA[3] !== 0 && !isNaN(maxDamageA[3]) ? resultA[3].damageText + '<br>' : ''}
+          </small></div>`;
+      }
       updateCell(row, col, content);
     }
   }

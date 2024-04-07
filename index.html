@@ -26,8 +26,10 @@
         </div>
         <button id="swapButton" onclick="swapInputValues()">⇄ Swap PokePastes</button>
         <button id="processButton">Load PokePastes & Construct Table</button>
+        <button id="modeSwitchButton" onclick="switchModes()">Switch to Defense Mode</button>
         <hr />
       </div>
+      <div class="mode-label" id="modeLabel"></div>
       <div class="system-message" id="systemMessage">
         <!-- System messages will be displayed here -->
       </div>
@@ -56,10 +58,11 @@
     <script src="imports/dmgcalc/damage_MASTER.js"></script>
     <script src="imports/dmgcalc/damage_SV.js"></script>
     <script src="imports/translator.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/utils.js"></script>
     <script src="js/poke-info-gen.js"></script>
     <script src="js/parse-input-text.js"></script>
     <script src="js/format-parsed-data.js"></script>
     <script src="js/crosstable.js"></script>
-    <script src="js/main.js"></script>
   </body>
 </html>
