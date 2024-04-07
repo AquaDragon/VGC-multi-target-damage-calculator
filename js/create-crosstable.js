@@ -18,7 +18,7 @@ var AT = 'at',
   SP = 'sp',
   SL = 'sl';
 
-// Functions associated with creating the crosstable display
+// Creates the crosstable display
 function createTable(rows, columns) {
   const table = document.createElement('table');
 
@@ -58,8 +58,8 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
   const table = createTable(parsedDataTeamA.length, parsedDataTeamA.length);
   tableContainer.appendChild(table); // Append the table to the container
 
-  const htmlOutputTeamA = formatParsedData(parsedDataTeamA);
-  const htmlOutputTeamB = formatParsedData(parsedDataTeamB);
+  const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA);
+  const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB);
 
   // Populate 1st column with Team A data
   for (let row = 1; row <= parsedDataTeamA.length; row++) {
@@ -134,6 +134,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
   }
 }
 
+// Dummy field input for the damage calculator
 function dummyField() {
   var format = 'Singles';
   var isGravity = false;

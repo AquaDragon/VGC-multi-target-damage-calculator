@@ -1,11 +1,12 @@
-function formatParsedData(parsedTeamData) {
-  const formattedOutput = parsedTeamData.map((poke, index) => {
+function formatPokeDisplay(teamData) {
+  const formattedOutput = teamData.map((poke, index) => {
     // Get category of all moves, used to format stat and moves later
     let moveCats = [];
     poke.moves.forEach((move) => {
       if (move === 'Tera Blast' && poke.stats.at > poke.stats.sa) {
         moveCats.push('Physical');
       } else {
+        console.log(move.category);
         moveCats.push(MOVES_SV[move] ? MOVES_SV[move].category : null);
       }
     });
@@ -27,6 +28,7 @@ function formatParsedData(parsedTeamData) {
           statStyle += 'color: #F08080; font-weight: bold;';
         }
         // Strikethrough if stat is unused
+        console.log(statName, noPhysicalMoves, noSpecialMoves);
         if ((statName === 'at' && noPhysicalMoves) || (statName === 'sa' && noSpecialMoves)) {
           statStyle += 'text-decoration: line-through;';
         }
