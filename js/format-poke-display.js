@@ -71,24 +71,25 @@ function formatPokeDisplay(teamData, whichteam) {
 
     const teraType = poke.tera_type ? `${poke.tera_type}` : `${poke.type1}`;
     const typeDisplay = `
-            <img
-                src="https://play.pokemonshowdown.com/sprites/types/${poke.type1}.png"
-                alt="${poke.type1}"
-            >
-            ${
-              poke.type2
-                ? `
-                <img
-                    src="https://play.pokemonshowdown.com/sprites/types/${poke.type2}.png"
-                    alt=" / ${poke.type2}"
-                >`
-                : ''
-            }
-            <img
-                src="https://play.pokemonshowdown.com/sprites/types/Tera${teraType}.png"
-                alt="${teraType}"
-                style="height: 25px;"
-            >`;
+      <img
+          src="https://play.pokemonshowdown.com/sprites/types/${poke.type1}.png"
+          alt="${poke.type1}"
+      >
+      ${
+        poke.type2
+          ? `
+          <img
+              src="https://play.pokemonshowdown.com/sprites/types/${poke.type2}.png"
+              alt=" / ${poke.type2}"
+          >`
+          : ''
+      }`;
+    const teraDisplay = `
+      <img
+          src="https://play.pokemonshowdown.com/sprites/types/Tera${teraType}.png"
+          alt="${teraType}"
+          style="height: 25px;"
+      >`;
 
     const itemDisplay = ITEMS_SV.includes(poke.item)
       ? `<span class='item-icon' style="${getItemIcon(poke.item)}" title="${poke.item}"></span>`
@@ -148,11 +149,12 @@ function formatPokeDisplay(teamData, whichteam) {
         <td class="display-cell">
           <div>
             <div class="poke-name-display">${poke.name || '-'}</div>
+            <div class="type-display">${typeDisplay}</div>
           </div>
           <div>
             <div class="text-display">${poke.ability || ''}</div>
-            <div class="item-display">${itemDisplay}</div>
-            <div class="type-display">${typeDisplay}</div>
+            <div class="item-display"></div>
+            <div class="type-display">${itemDisplay}<div style="margin-right: 18px;"></div>${teraDisplay}</div>
           </div>
           <div>
             <div class="text-display">${statDisplay}</div>

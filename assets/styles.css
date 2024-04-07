@@ -170,8 +170,8 @@ h1 {
 
 .poke-display {
   position: absolute;
-  bottom: 0px;
-  right: 10px;
+  top: 0px;
+  left: 70px;
   z-index: 1;
   opacity: 0.1;
 }
