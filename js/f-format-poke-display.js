@@ -130,8 +130,11 @@ function formatPokeDisplay(teamData, whichteam) {
       })
       .join('');
 
-    const formatPokeName = poke.name.toLowerCase().replace(/[\s]+/g, '');
-    // don't remove hyphen for alternate forme sprites
+    const pokeNameExceptions = ['chi-yu', 'ting-lu', 'wo-chien', 'chien-pao'];
+    const formatPokeName = pokeNameExceptions.includes(poke.name.toLowerCase())
+      ? poke.name.toLowerCase().replace(/[\s-]+/g, '') // don't remove hyphen for alternate forme sprites
+      : poke.name.toLowerCase().replace(/[\s]+/g, '');
+
     const pokeDisplay = `
       <img
           src="https://play.pokemonshowdown.com/sprites/gen5/${formatPokeName}.png"
