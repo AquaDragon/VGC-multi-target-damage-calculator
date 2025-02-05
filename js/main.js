@@ -1,10 +1,17 @@
 var mode = 'attack';
+var currentOutputType = 'none';
 
-document.getElementById('processButton').addEventListener('click', function () {
-  updateTable();
+document.getElementById('constructTableButton').addEventListener('click', function () {
+  currentOutputType = 'table';
+  updateOutput('table');
 });
 
-function updateTable() {
+document.getElementById('constructListButton').addEventListener('click', function () {
+  currentOutputType = 'list';
+  updateOutput('list');
+});
+
+function validateInputs() {
   const inputTextA = document.getElementById('textInputA').value;
   const inputTextB = document.getElementById('textInputB').value;
 
@@ -23,7 +30,16 @@ function updateTable() {
   const parsedDataTeamA = parseInputText(inputTextA);
   const parsedDataTeamB = parseInputText(inputTextB);
 
-  populateTable(parsedDataTeamA, parsedDataTeamB);
+  return { parsedDataTeamA, parsedDataTeamB };
+}
+
+function updateOutput(type) {
+  const { parsedDataTeamA, parsedDataTeamB } = validateInputs();
+  if (type === 'table') {
+    populateTable(parsedDataTeamA, parsedDataTeamB);
+  } else if (type === 'list') {
+    populateList(parsedDataTeamA, parsedDataTeamB);
+  }
 
   updateModeLabel();
   displaySystemMessage(''); // Clear any previous system messages
@@ -40,22 +56,14 @@ function displaySystemMessage(message, isError = false) {
   }
 }
 
-function swapInputValues() {
-  const textareaA = document.getElementById('textInputA');
-  const textareaB = document.getElementById('textInputB');
-
-  const tempValue = textareaA.value;
-  textareaA.value = textareaB.value;
-  textareaB.value = tempValue;
-}
-
+// Table display functions
 function switchModes() {
   if (mode === 'attack') {
     mode = 'defense';
   } else {
     mode = 'attack';
   }
-  updateTable();
+  updateOutput(currentOutputType);
 }
 
 function updateModeLabel() {
@@ -63,6 +71,16 @@ function updateModeLabel() {
   const buttonText = mode === 'attack' ? 'Switch to Defense Mode' : 'Switch to Attack Mode';
   modeLabelElement.innerHTML = `<b style="font-size: calc(1.2 * 1rem);">${toTitleCase(mode)} Mode</b>
   <button id="modeSwitchButton" onclick="switchModes()">↺ ${buttonText}</button>`;
+}
+
+// Input functions
+function swapInputValues() {
+  const textareaA = document.getElementById('textInputA');
+  const textareaB = document.getElementById('textInputB');
+
+  const tempValue = textareaA.value;
+  textareaA.value = textareaB.value;
+  textareaB.value = tempValue;
 }
 
 function clearTextInput(inputId) {
