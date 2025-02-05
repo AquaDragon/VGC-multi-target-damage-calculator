@@ -137,6 +137,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
 // Dummy field input for the damage calculator
 function dummyField() {
   var format = 'Singles';
+  var format = 'Doubles';
   var isGravity = false;
   var isSR = [false, false];
   var isProtect = [false, false];

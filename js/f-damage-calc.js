@@ -129,6 +129,7 @@ class PokemonInfo {
                       ? 4
                       : 1,
           isDouble: moveDetails.canDouble ? 2 : 0,
+          isSpread: moveDetails.isSpread ? 1 : 0,
           tripleHits: moveDetails.isTripleHit ? 3 : 0,
           combinePledge: moveName.includes(' Pledge') ? moveInfo.find('.move-pledge').val() : 0,
           timesAffected: ['Last Respects', 'Rage Fist'].indexOf(moveName) != -1 ? 1 : 0,
