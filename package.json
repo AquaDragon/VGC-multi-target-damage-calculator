@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "prettier": "3.2.5"
+  },
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,jsx,json,css,scss}\""
   }
 }

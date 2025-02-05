@@ -75,7 +75,6 @@ class PokemonInfo {
   }
 
   calcHP() {
-    console.log(this.name)
     const base = this.bs.hp;
     if (base === 1) {
       this.stats.hp = 1;
