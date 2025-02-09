@@ -18,4 +18,5 @@ var SHOWDOWN_TO_DMGCALC_NAMES = {
   Lycanroc: 'Lycanroc-Midday',
   Oricorio: 'Oricorio-Baile',
   Urshifu: 'Urshifu-Single Strike',
+  'Urshifu-Rapid-Strike': 'Urshifu-Rapid Strike',
 };
