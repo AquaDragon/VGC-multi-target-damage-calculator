@@ -18,7 +18,10 @@ var AT = 'at',
   SP = 'sp',
   SL = 'sl';
 
-// Creates the crosstable display
+/* ------------------------------------------------------------------
+    TABLE calculation functions
+   ------------------------------------------------------------------
+*/
 function createTable(rows, columns) {
   const table = document.createElement('table');
 
@@ -98,14 +101,14 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
 }
 
 /* ------------------------------------------------------------------
-    Functions to generate LIST of calculations
+    LIST header functions
    ------------------------------------------------------------------
 */
 function createList(rows) {
   const list = document.createElement('table');
   list.classList.add('sortable-table');
 
-  // create table headers
+  // Create table headers
   const header = list.createTHead();
   const headerRow = header.insertRow();
   const headers = [
@@ -123,24 +126,103 @@ function createList(rows) {
     'KO chance',
   ];
 
+  let columnIndex = 0; // Tracks actual column index (ignoring empty columns)
   headers.forEach((headerText, index) => {
     const th = document.createElement('th');
     th.textContent = headerText;
 
     if (headerText === 'Damage Range') {
       th.setAttribute('colspan', 4);
+      th.addEventListener('click', () => sortList(list, columnIndex)); // Sort using first sub-column of Damage Range
+      // columnIndex++;  // issue with indexing, need to adjust later
     } else {
-      th.addEventListener('click', () => sortList(list, index)); // Add sorting functionality on header click
+      let currentIndex = columnIndex; // Capture the correct index for closure
+      th.addEventListener('click', () => sortList(list, currentIndex));
+      columnIndex++;
     }
 
     headerRow.appendChild(th);
   });
 
-  list.createTBody(); // create table body
-
+  list.createTBody(); // Create table body
   return list;
 }
 
+let currentSortState = {}; // Tracks sorting state per column
+
+function sortList(table, col) {
+  const tbody = table.tBodies[0];
+  const rows = Array.from(tbody.rows);
+
+  // Determine the correct column to sort
+  let targetCol = col; // Default: Use the clicked column
+
+  // Handle colspan for 'Damage Range', always sort by the first sub-column
+  const headerCell = table.tHead.rows[0].cells[col];
+  if (headerCell && headerCell.colSpan > 1) {
+    targetCol = col; // Always use the first column of 'Damage Range' for sorting
+  }
+
+  // Get current sort state (default: ascending)
+  const currentState = currentSortState[targetCol] || 'ascending';
+
+  // Sort rows based on current state
+  rows.sort((a, b) => {
+    let valA = a.cells[col].innerText;
+    let valB = b.cells[col].innerText;
+
+    // Convert to numbers for sorting, fallback to string comparison
+    let numA = parseFloat(valA);
+    let numB = parseFloat(valB);
+
+    return isNaN(numA) || isNaN(numB) ? valA.localeCompare(valB) : numA - numB;
+  });
+
+  // Toggle the sort state between 'ascending' and 'descending'
+  currentSortState[col] = currentState === 'ascending' ? 'descending' : 'ascending';
+
+  // Update sorting icons
+  updateSortIcons(table.tHead.rows[0].cells, targetCol, currentSortState[targetCol]);
+
+  // Reverse the order for descending sort
+  if (currentSortState[col] === 'descending') {
+    rows.reverse();
+  }
+
+  // Append sorted rows back to tbody
+  tbody.innerHTML = '';
+  rows.forEach((row) => tbody.appendChild(row));
+}
+
+// Function to extract values for sorting
+function extractSortValue(row, col) {
+  let cell = row.cells[col];
+  if (!cell) return 0;
+
+  let text = cell.innerText.trim();
+
+  // Extract the first number from a range like "23 - 45 %"
+  let match = text.match(/\d+/); // Get first number
+  return match ? parseFloat(match[0]) : text.localeCompare(text);
+}
+
+// Function to update sorting icons in table headers
+function updateSortIcons(headers, col, sortState) {
+  for (let i = 0; i < headers.length; i++) {
+    let header = headers[i];
+    let text = header.innerText.replace(/ ▲| ▼/g, ''); // Remove existing icons
+    if (i === col) {
+      header.innerText = text + (sortState === 'ascending' ? ' ▲' : ' ▼');
+    } else {
+      header.innerText = text; // Reset other headers
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+    List calculation functions
+   ------------------------------------------------------------------
+*/
 // Checks p1, p2 and field before performing calculation
 function checkPokeFieldCombos(p1, p2) {
   // Check if held items result in a different Poke forme
@@ -345,38 +427,4 @@ function dummyField() {
       isAuroraVeil[i]
     );
   };
-}
-
-let currentSortState = {}; // Object to track the current sort state for each column
-
-function sortList(table, col) {
-  const tbody = table.tBodies[0];
-  const rows = Array.from(tbody.rows);
-
-  // Get the current sort state, default to 'ascending'
-  const currentState = currentSortState[col] || 'ascending';
-
-  // Sort rows based on current state
-  rows.sort((a, b) => {
-    let valA = a.cells[col].innerText;
-    let valB = b.cells[col].innerText;
-
-    // Convert to numbers for sorting, fallback to string comparison
-    let numA = parseFloat(valA);
-    let numB = parseFloat(valB);
-
-    return isNaN(numA) || isNaN(numB) ? valA.localeCompare(valB) : numA - numB;
-  });
-
-  // Toggle the sort state between 'ascending' and 'descending'
-  currentSortState[col] = currentState === 'ascending' ? 'descending' : 'ascending';
-
-  // Reverse the order for descending sort
-  if (currentSortState[col] === 'descending') {
-    rows.reverse();
-  }
-
-  // Append sorted rows back to tbody
-  tbody.innerHTML = '';
-  rows.forEach((row) => tbody.appendChild(row));
 }
