@@ -105,35 +105,32 @@ class PokemonInfo {
   getMoveDetails(moveName) {
     if (MOVES_SV[moveName]) {
       var moveDetails = MOVES_SV[moveName];
-      return $.extend(
-        {},
-        {
-          name: moveName,
-          bp: ~~moveDetails.bp,
-          type: moveDetails.type,
-          category: moveDetails.category,
-          isCrit: 0,
-          isZ: 0,
-          hits: moveDetails.isMultiHit
-            ? 5 // 2 to 5
-            : moveDetails.isTenMultiHit
-              ? 10
-              : moveName == 'Dragon Darts'
+      return $.extend({}, moveDetails, {
+        name: moveName,
+        bp: ~~moveDetails.bp,
+        type: moveDetails.type,
+        category: moveDetails.category,
+        isCrit: 0,
+        isZ: 0,
+        hits: moveDetails.isMultiHit
+          ? 5 // 2 to 5
+          : moveDetails.isTenMultiHit
+            ? 10
+            : moveName == 'Dragon Darts'
+              ? 2
+              : moveDetails.isTwoHit
                 ? 2
-                : moveDetails.isTwoHit
-                  ? 2
-                  : moveDetails.isThreeHit
-                    ? 3
-                    : moveName == 'Beat Up'
-                      ? 4
-                      : 1,
-          isDouble: moveDetails.canDouble ? 2 : 0,
-          isSpread: moveDetails.isSpread ? 1 : 0,
-          tripleHits: moveDetails.isTripleHit ? 3 : 0,
-          combinePledge: moveName.includes(' Pledge') ? moveInfo.find('.move-pledge').val() : 0,
-          timesAffected: ['Last Respects', 'Rage Fist'].indexOf(moveName) != -1 ? 1 : 0,
-        }
-      ); // MOVES_SV[move]
+                : moveDetails.isThreeHit
+                  ? 3
+                  : moveName == 'Beat Up'
+                    ? 4
+                    : 1,
+        isDouble: moveDetails.canDouble ? 2 : 0,
+        isSpread: moveDetails.isSpread ? 1 : 0,
+        tripleHits: moveDetails.isTripleHit ? 3 : 0,
+        combinePledge: moveName.includes(' Pledge') ? moveInfo.find('.move-pledge').val() : 0,
+        timesAffected: ['Last Respects', 'Rage Fist'].indexOf(moveName) != -1 ? 1 : 0,
+      }); // MOVES_SV[move]
     } else {
       return null;
     }
@@ -168,3 +165,23 @@ function updatePokeForme(poke) {
     return poke;
   }
 }
+
+// from ap_calc.js > autoSetTerrain()
+function updateFieldTerrain(p1, p2, field) {
+  // Grassy Terrain check is first due to the need to check for abilityToggle with Seed Sower
+  if ([p1.ability, p2.ability].includes('Grassy Surge') || p1.ability == 'Seed Sower' || p2.ability == 'Seed Sower') {
+    field.setTerrain('Grassy');
+  } else if (
+    [p1.ability, p2.ability].includes('Electric Surge') ||
+    [p1.ability, p2.ability].includes('Hadron Engine')
+  ) {
+    field.setTerrain('Electric');
+  } else if ([p1.ability, p2.ability].includes('Misty Surge')) {
+    field.setTerrain('Misty');
+  } else if ([p1.ability, p2.ability].includes('Psychic Surge')) {
+    field.setTerrain('Psychic');
+  }
+}
+
+// from ap_calc.js > autoSetRuin()
+function checkRuinAbility(p1, p2) {}

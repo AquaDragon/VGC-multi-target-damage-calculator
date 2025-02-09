@@ -149,6 +149,8 @@ function checkPokeFieldCombos(p1, p2) {
 
   // generate the field, use default dummy otherwise
   var field = new dummyField();
+  updateFieldTerrain(p1, p2, field);
+  // checkRuinAbility(p1, p2); // does not work yet
 
   return { p1, p2, field };
 }
@@ -181,20 +183,24 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
             p2.name.toLowerCase().replace(/[\s-]+/g, ''),
           ].join('-');
 
-          let testfield = new dummyField();
-
           damageList[key] = {
             attacker: p1.name,
             moveName: move.name,
             moveCategory: moveCat,
             attackerAC: moveCat === 'Physical' ? p1.evs.at : p1.evs.sa,
-            attackerStat: moveCat === 'Physical' ? 'Atk' : 'SpA',
+            attackerStat:
+              moveCat === 'Physical'
+                ? 'Atk' + parseNatureDisplay(p1.nature, 'at')
+                : 'SpA' + parseNatureDisplay(p1.nature, 'sa'),
             attackerItem: p1.item,
             attackerAbility: p1.ability,
             defender: p2.name,
             defenderHP: p2.evs.hp,
             defenderBD: moveCat === 'Physical' ? p2.evs.df : p2.evs.sd,
-            defenderStat: moveCat === 'Physical' ? 'Def' : 'SpD',
+            defenderStat:
+              moveCat === 'Physical'
+                ? 'Def' + parseNatureDisplay(p2.nature, 'df')
+                : 'SpD' + parseNatureDisplay(p2.nature, 'sd'),
             defenderItem: p2.item,
             defenderAbility: p2.ability,
             isSpread: move.isSpread,
@@ -204,7 +210,7 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
               result[jj].damage,
               p1.moves[jj],
               p2,
-              testfield.getSide(0),
+              field.getSide(0),
               p1.ability === 'Bad Dreams'
             ),
           };
@@ -244,7 +250,6 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
 
 function calculateDamage(p1, p2, field, outputType) {
   var damageResults = CALCULATE_ALL_MOVES_SV(p1, p2, field);
-  console.log(damageResults);
 
   var result = [],
     minDamage = [],
@@ -291,6 +296,10 @@ function dummyField() {
   var isAuroraVeil = [false, false];
   var isSwamp = [false, false];
   var isSeaFire = [false, false];
+
+  this.setTerrain = function (newTerrain) {
+    terrain = newTerrain;
+  };
 
   this.getNeutralGas = function () {
     return isNeutralizingGas;

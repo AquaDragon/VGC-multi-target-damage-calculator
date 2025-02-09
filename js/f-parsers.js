@@ -69,3 +69,7 @@ function parseInputText(inputText) {
 
   return parsedData;
 }
+
+function parseNatureDisplay(nature, stat) {
+  return NATURES[nature][0] === stat ? '+' : NATURES[nature][1] === stat ? '-' : '';
+}
