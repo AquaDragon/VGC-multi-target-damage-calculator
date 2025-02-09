@@ -1,9 +1,4 @@
-/*
-    Important functions equivalent to those in (dmg calc)/script_res/ap_calc.js
-    29 Aug 2023
-*/
-
-// Equivalent to Pokemon()
+// Equivalent to Pokemon() in (dmg calc)/script_res/ap_calc.js
 class PokemonInfo {
   constructor(name, item, level, ability, nature, tera_type, moves, evs = {}, ivs = {}) {
     this.name = name;
@@ -44,6 +39,7 @@ class PokemonInfo {
     this.calcStats();
     this.HPEVs = this.evs.hp;
     this.maxHP = this.stats.hp;
+    this.curHP = this.stats.hp; // Set to max HP (for KO chance calc)
 
     this.rawStats = this.stats; // Set to calculated stats
     this.boosts = {
@@ -70,6 +66,9 @@ class PokemonInfo {
         if (typeof statValue !== 'undefined') {
           this.bs[statName] = statValue;
         }
+
+        this.weight = pokemonData.w;
+        this.formes = pokemonData.formes;
       }
     }
   }
@@ -138,5 +137,34 @@ class PokemonInfo {
     } else {
       return null;
     }
+  }
+}
+
+// Check if forme changes based on held item
+function updatePokeForme(poke) {
+  const pokeItemCombos = {
+    Zamazenta: { 'Rusted Shield': 'Zamazenta-Crowned' },
+    Zacian: { 'Rusted Sword': 'Zacian-Crowned' },
+  };
+
+  if (pokeItemCombos[poke.name]?.[poke.item]) {
+    // Grab old Pokémon info
+    const { name, item, level, ability, nature, tera_type, moves, evs, ivs } = poke;
+
+    // Create new Pokémon with updated forme
+    const newPoke = new PokemonInfo(
+      pokeItemCombos[poke.name][poke.item],
+      item,
+      level,
+      ability,
+      nature,
+      tera_type, // teratype
+      Object.values(moves).map((move) => move.name), // moves, need to parse into list
+      evs,
+      ivs
+    );
+    return newPoke;
+  } else {
+    return poke;
   }
 }

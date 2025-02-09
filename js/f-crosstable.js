@@ -55,7 +55,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
   tableContainer.innerHTML = ''; // Clear existing content
 
   // Create a table with rows for Team A and columns for Team B
-  const table = createTable(parsedDataTeamA.length, parsedDataTeamA.length);
+  const table = createTable(parsedDataTeamA.length, parsedDataTeamB.length);
   tableContainer.appendChild(table); // Append the table to the container
 
   const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA, 'A');
@@ -73,37 +73,32 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
 
   for (let row = 1; row <= parsedDataTeamA.length; row++) {
     for (let col = 1; col <= parsedDataTeamB.length; col++) {
-      var p1 = parsedDataTeamA[row - 1];
-      var p2 = parsedDataTeamB[col - 1];
+      var p1Raw = parsedDataTeamA[row - 1];
+      var p2Raw = parsedDataTeamB[col - 1];
 
-      var { resultA, resultB, maxDamageA, maxDamageB } = calculateDamage(p1, p2, 'table');
+      const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
 
-      let content;
+      let result, maxDamage;
       if (mode === 'attack') {
-        content = `
-          <div class='crosstable-cell'><small>
-            ${maxDamageB[0] !== 0 && !isNaN(maxDamageB[0]) ? resultB[0].damageText + '<br>' : ''}
-            ${maxDamageB[1] !== 0 && !isNaN(maxDamageB[1]) ? resultB[1].damageText + '<br>' : ''}
-            ${maxDamageB[2] !== 0 && !isNaN(maxDamageB[2]) ? resultB[2].damageText + '<br>' : ''}
-            ${maxDamageB[3] !== 0 && !isNaN(maxDamageB[3]) ? resultB[3].damageText + '<br>' : ''}
-          </small></div>
-      `;
+        ({ result, maxDamage } = calculateDamage(p1, p2, field, 'table'));
       } else {
-        content = `
-          <div class='crosstable-cell'><small>
-            ${maxDamageA[0] !== 0 && !isNaN(maxDamageA[0]) ? resultA[0].damageText + '<br>' : ''}
-            ${maxDamageA[1] !== 0 && !isNaN(maxDamageA[1]) ? resultA[1].damageText + '<br>' : ''}
-            ${maxDamageA[2] !== 0 && !isNaN(maxDamageA[2]) ? resultA[2].damageText + '<br>' : ''}
-            ${maxDamageA[3] !== 0 && !isNaN(maxDamageA[3]) ? resultA[3].damageText + '<br>' : ''}
-          </small></div>`;
+        ({ result, maxDamage } = calculateDamage(p2, p1, field, 'table'));
       }
+      let content = `
+        <div class='crosstable-cell'><small>
+          ${maxDamage[0] !== 0 && !isNaN(maxDamage[0]) ? result[0].damageText + '<br>' : ''}
+          ${maxDamage[1] !== 0 && !isNaN(maxDamage[1]) ? result[1].damageText + '<br>' : ''}
+          ${maxDamage[2] !== 0 && !isNaN(maxDamage[2]) ? result[2].damageText + '<br>' : ''}
+          ${maxDamage[3] !== 0 && !isNaN(maxDamage[3]) ? result[3].damageText + '<br>' : ''}
+        </small></div>`;
+
       updateCell(row, col, content, 'table');
     }
   }
 }
 
 /* ------------------------------------------------------------------
-    list functions
+    Functions to generate LIST of calculations
    ------------------------------------------------------------------
 */
 function createList(rows) {
@@ -113,7 +108,20 @@ function createList(rows) {
   // create table headers
   const header = list.createTHead();
   const headerRow = header.insertRow();
-  const headers = ['EVs', 'Attacker', 'Move', '', 'EVs', 'Defender', 'Damage Range'];
+  const headers = [
+    'EVs',
+    'Ability',
+    'Item',
+    'Attacker',
+    'Move',
+    '',
+    'EVs',
+    'Ability',
+    'Item',
+    'Defender',
+    'Damage Range',
+    'KO chance',
+  ];
 
   headers.forEach((headerText, index) => {
     const th = document.createElement('th');
@@ -133,26 +141,28 @@ function createList(rows) {
   return list;
 }
 
+// Checks p1, p2 and field before performing calculation
+function checkPokeFieldCombos(p1, p2) {
+  // Check if held items result in a different Poke forme
+  p1 = updatePokeForme(p1);
+  p2 = updatePokeForme(p2);
+
+  // generate the field, use default dummy otherwise
+  var field = new dummyField();
+
+  return { p1, p2, field };
+}
+
 function populateList(parsedDataTeamA, parsedDataTeamB) {
   const damageList = {};
 
   for (let row = 0; row < parsedDataTeamA.length; row++) {
     for (let col = 0; col < parsedDataTeamB.length; col++) {
-      const [p1, p2] =
-        mode === 'attack' ? [parsedDataTeamB[row], parsedDataTeamA[col]] : [parsedDataTeamA[row], parsedDataTeamB[col]];
+      const p1Raw = structuredClone(mode === 'attack' ? parsedDataTeamB[col] : parsedDataTeamA[row]);
+      const p2Raw = structuredClone(mode === 'attack' ? parsedDataTeamA[row] : parsedDataTeamB[col]);
 
-      let {
-        resultA,
-        resultB,
-        maxDamageA,
-        maxDamageB,
-        minDamageA,
-        minDamageB,
-        minPercentA,
-        minPercentB,
-        maxPercentA,
-        maxPercentB,
-      } = calculateDamage(p1, p2, 'list');
+      const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
+      let { result, maxDamage, minDamage, minPercent, maxPercent } = calculateDamage(p1, p2, field, 'list');
 
       for (let jj = 0; jj < p1.moves.length; jj++) {
         let move = p1.moves[jj];
@@ -171,6 +181,8 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
             p2.name.toLowerCase().replace(/[\s-]+/g, ''),
           ].join('-');
 
+          let testfield = new dummyField();
+
           damageList[key] = {
             attacker: p1.name,
             moveName: move.name,
@@ -178,14 +190,23 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
             attackerAC: moveCat === 'Physical' ? p1.evs.at : p1.evs.sa,
             attackerStat: moveCat === 'Physical' ? 'Atk' : 'SpA',
             attackerItem: p1.item,
+            attackerAbility: p1.ability,
             defender: p2.name,
             defenderHP: p2.evs.hp,
             defenderBD: moveCat === 'Physical' ? p2.evs.df : p2.evs.sd,
             defenderStat: moveCat === 'Physical' ? 'Def' : 'SpD',
             defenderItem: p2.item,
+            defenderAbility: p2.ability,
             isSpread: move.isSpread,
-            damageRange: [minDamageA[jj], maxDamageA[jj]],
-            percentRange: [minPercentA[jj], maxPercentA[jj]],
+            damageRange: [minDamage[jj], maxDamage[jj]],
+            percentRange: [minPercent[jj], maxPercent[jj]],
+            kochance: getKOChanceText(
+              result[jj].damage,
+              p1.moves[jj],
+              p2,
+              testfield.getSide(0),
+              p1.ability === 'Bad Dreams'
+            ),
           };
         }
       }
@@ -205,117 +226,43 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
     let row = tbody.insertRow();
     row.innerHTML = `
       <td style="text-align: right;">${entry.attackerAC} ${entry.attackerStat}</td>
+      <td>${entry.attackerAbility}</td>
+      <td><span class='item-icon' style="${getItemIcon(entry.attackerItem)}" title="${entry.attackerItem}"></span></td>
       <td>${entry.attacker}</td>
-      <td>${entry.moveName}${entry.isSpread ? ' (Spread)' : ''}</td>
+      <td>${entry.moveName}${entry.isSpread ? '*' : ''}</td>
       <td>vs.</td>
       <td style="text-align: right;">${entry.defenderHP} HP / ${entry.defenderBD} ${entry.defenderStat}</td>
+      <td>${entry.defenderAbility}</td>
+      <td><span class='item-icon' style="${getItemIcon(entry.defenderItem)}" title="${entry.defenderItem}"></span></td>
       <td>${entry.defender}</td>
       <td style="text-align: right;">${entry.percentRange[0]}</td><td>-</td><td>${entry.percentRange[1]} %</td>
       <td>(${entry.damageRange[0]}-${entry.damageRange[1]})</td>
+      <td>(${entry.kochance})</td>
     `;
   });
 }
 
-let currentSortState = {}; // Object to track the current sort state for each column
-
-function sortList(table, columnIndex) {
-  const tbody = table.tBodies[0];
-  const rows = Array.from(tbody.rows);
-
-  // Determine current sort direction (ascending, descending, or unsorted) -- 05Feb2025 unsorted does not work
-  const currentState = currentSortState[columnIndex] || 'ascending'; // Default is ascending if not defined
-
-  // Sort rows based on current state
-  if (currentState === 'ascending') {
-    rows.sort((a, b) => {
-      let valA = a.cells[columnIndex].innerText;
-      let valB = b.cells[columnIndex].innerText;
-
-      // Convert to numbers for sorting, fallback to string comparison
-      let numA = parseFloat(valA);
-      let numB = parseFloat(valB);
-
-      return isNaN(numA) || isNaN(numB) ? valA.localeCompare(valB) : numA - numB;
-    });
-    currentSortState[columnIndex] = 'descending'; // Set next state to descending
-  } else if (currentState === 'descending') {
-    rows.sort((a, b) => {
-      let valA = a.cells[columnIndex].innerText;
-      let valB = b.cells[columnIndex].innerText;
-
-      // Convert to numbers for sorting, fallback to string comparison
-      let numA = parseFloat(valA);
-      let numB = parseFloat(valB);
-
-      return isNaN(numA) || isNaN(numB) ? valB.localeCompare(valA) : numB - numA;
-    });
-    currentSortState[columnIndex] = 'unsorted'; // Set next state to unsorted
-  } else {
-    // Revert to unsorted (original order)
-    rows.sort(() => 0); // No sorting, will revert to original order
-    currentSortState[columnIndex] = 'ascending'; // Set next state to ascending
-  }
-
-  // Append sorted rows back to tbody
-  tbody.innerHTML = '';
-  rows.forEach((row) => tbody.appendChild(row));
-}
-
-function calculateDamage(p1, p2, outputType) {
-  var field = new dummyField();
+function calculateDamage(p1, p2, field, outputType) {
   var damageResults = CALCULATE_ALL_MOVES_SV(p1, p2, field);
+  console.log(damageResults);
 
-  var resultA = [],
-    resultB = [],
-    minDamageA = [],
-    minDamageB = [],
-    maxDamageA = [],
-    maxDamageB = [],
-    minPercentA = [],
-    maxPercentA = [],
-    minPercentB = [],
-    maxPercentB = [];
+  var result = [],
+    minDamage = [],
+    maxDamage = [],
+    minPercent = [],
+    maxPercent = [];
 
   for (var i = 0; i < 4; i++) {
     p1.moves[i].painMax = p1.moves[i].name === 'Pain Split' && p1.isDynamax;
-    resultA[i] = damageResults[0][i];
-    minDamageA[i] = resultA[i].damage[0] * p1.moves[i].hits;
-    maxDamageA[i] = resultA[i].damage[resultA[i].damage.length - 1] * p1.moves[i].hits;
-    minPercentA[i] = Math.floor((minDamageA[i] * 1000) / p2.maxHP) / 10;
-    maxPercentA[i] = Math.floor((maxDamageA[i] * 1000) / p2.maxHP) / 10;
-    resultA[i].intro =
-      outputType === 'list'
-        ? `${p1.moves[i].category === 'Physical' ? p1.evs.at + ' Atk ' : p1.evs.sa + ' Sp.Atk '} ${p1.name}'s `
-        : '';
-    resultA[i].damageText =
-      `${resultA[i].intro}${p1.moves[i].name} ${minDamageA[i]}-${maxDamageA[i]} (${minPercentA[i]} - ${maxPercentA[i]}%)`;
-
-    p2.moves[i].painMax = p2.moves[i].name === 'Pain Split' && p2.isDynamax;
-    resultB[i] = damageResults[1][i];
-    minDamageB[i] = resultB[i].damage[0] * p2.moves[i].hits;
-    maxDamageB[i] = resultB[i].damage[resultB[i].damage.length - 1] * p2.moves[i].hits;
-    minPercentB[i] = Math.floor((minDamageB[i] * 1000) / p1.maxHP) / 10;
-    maxPercentB[i] = Math.floor((maxDamageB[i] * 1000) / p1.maxHP) / 10;
-    resultB[i].intro =
-      outputType === 'list'
-        ? `vs. ${p1.evs.hp} HP / ${p2.moves[i].category === 'Physical' ? p1.evs.df + ' Def' : p1.evs.sd + ' Sp.Def'} (${p2.moves[i].category}) ${p1.name} `
-        : '';
-    resultB[i].damageText =
-      `${p2.moves[i].name} ${resultB[i].intro} ${minDamageB[i]}-${maxDamageB[i]} (${minPercentB[i]} - ${maxPercentB[i]}%)`;
+    result[i] = damageResults[0][i];
+    minDamage[i] = result[i].damage[0] * p1.moves[i].hits;
+    maxDamage[i] = result[i].damage[result[i].damage.length - 1] * p1.moves[i].hits;
+    minPercent[i] = Math.floor((minDamage[i] * 1000) / p2.maxHP) / 10;
+    maxPercent[i] = Math.floor((maxDamage[i] * 1000) / p2.maxHP) / 10;
+    result[i].damageText = `${p1.moves[i].name} ${minDamage[i]}-${maxDamage[i]} (${minPercent[i]} - ${maxPercent[i]}%)`;
   }
 
-  return {
-    resultA,
-    resultB,
-    maxDamageA,
-    maxDamageB,
-    minDamageA,
-    minDamageB,
-    minPercentA,
-    minPercentB,
-    maxPercentA,
-    maxPercentB,
-  };
+  return { result, maxDamage, minDamage, minPercent, maxPercent };
 }
 
 // Dummy field input for the damage calculator
@@ -389,4 +336,38 @@ function dummyField() {
       isAuroraVeil[i]
     );
   };
+}
+
+let currentSortState = {}; // Object to track the current sort state for each column
+
+function sortList(table, col) {
+  const tbody = table.tBodies[0];
+  const rows = Array.from(tbody.rows);
+
+  // Get the current sort state, default to 'ascending'
+  const currentState = currentSortState[col] || 'ascending';
+
+  // Sort rows based on current state
+  rows.sort((a, b) => {
+    let valA = a.cells[col].innerText;
+    let valB = b.cells[col].innerText;
+
+    // Convert to numbers for sorting, fallback to string comparison
+    let numA = parseFloat(valA);
+    let numB = parseFloat(valB);
+
+    return isNaN(numA) || isNaN(numB) ? valA.localeCompare(valB) : numA - numB;
+  });
+
+  // Toggle the sort state between 'ascending' and 'descending'
+  currentSortState[col] = currentState === 'ascending' ? 'descending' : 'ascending';
+
+  // Reverse the order for descending sort
+  if (currentSortState[col] === 'descending') {
+    rows.reverse();
+  }
+
+  // Append sorted rows back to tbody
+  tbody.innerHTML = '';
+  rows.forEach((row) => tbody.appendChild(row));
 }
