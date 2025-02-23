@@ -124,6 +124,7 @@ function createList(rows) {
     'Defender',
     'Damage Range',
     'KO chance',
+    'KO value',
   ];
 
   let columnIndex = 0; // Tracks actual column index (ignoring empty columns)
@@ -247,12 +248,61 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
       const p2Raw = structuredClone(mode === 'attack' ? parsedDataTeamA[row] : parsedDataTeamB[col]);
 
       const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
-      let { result, maxDamage, minDamage, minPercent, maxPercent } = calculateDamage(p1, p2, field, 'list');
+      const { result, maxDamage, minDamage, minPercent, maxPercent } = calculateDamage(p1, p2, field, 'list');
 
       for (let jj = 0; jj < p1.moves.length; jj++) {
-        let move = p1.moves[jj];
+        const move = p1.moves[jj];
         if (!move) continue; // Avoid accessing undefined move
 
+        // --------------------------------------------------------------------
+        //   Deconstruct the koChanceText to define KO value
+        // --------------------------------------------------------------------
+        const koChanceText = getKOChanceText(
+          result[jj].damage,
+          p1.moves[jj],
+          p2,
+          field.getSide(0),
+          p1.ability === 'Bad Dreams'
+        );
+
+        const koChanceTextParts = koChanceText.split(/(\d+|O)HKO/);
+
+        const chanceText = koChanceTextParts[0].trim();
+        const matchPercent = chanceText.match(/(\d+(\.\d+)?)%[\s]*chance/);
+        const percentKO = matchPercent
+          ? parseInt(matchPercent[1], 10)
+          : chanceText.includes('guaranteed')
+            ? 100
+            : chanceText.includes('possible')
+              ? 50
+              : null;
+
+        const koText = koChanceTextParts[1]?.trim();
+        const koNumber = koText ? (koText === 'O' ? 1 : parseInt(koText, 10)) : null;
+        const koValue =
+          koNumber !== null
+            ? Math.round((koNumber + (1 - percentKO / 100)) * 100) / 100 // round to 2 decimals
+            : 0;
+
+        // --------------------------------------------------------------------
+        //   Deconstruct description from Damage Calculator
+        // --------------------------------------------------------------------
+        const desc = result[jj].description
+          .replace(/Lv\. \d{1,2}|100/g, '') // remove "Lv. XX" (by default all Lv.50)
+          .split(' vs. ')
+          .map((part) => part.trim());
+
+        const statPattern = /\d+\+?\-?\s*(HP|Atk|Def|SpA|SpD)/g;
+        const attackerStat = desc[0].match(statPattern) || [];
+        const defenderStat = desc[1].match(statPattern) || [];
+
+        // Flags to check if Ability or Item were used in the damage calc
+        const attackerAbilityUsed = !!desc[0].match(p1.ability);
+        const attackerItemUsed = !!desc[0].match(p1.item);
+        const defenderAbilityUsed = !!desc[0].match(p2.ability);
+        const defenderItemUsed = !!desc[0].match(p2.item);
+
+        // Define unique key (ID) for each damage calc
         let moveCat = move.name === 'Tera Blast' ? (p1.evs.at > p1.evs.sa ? 'Physical' : 'Special') : move.category;
         if (moveCat !== 'Status') {
           let atkStatKey = moveCat === 'Physical' ? `${p1.evs.at}A` : `${p1.evs.sa}C`;
@@ -270,32 +320,22 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
             attacker: p1.name,
             moveName: move.name,
             moveCategory: moveCat,
-            attackerAC: moveCat === 'Physical' ? p1.evs.at : p1.evs.sa,
-            attackerStat:
-              moveCat === 'Physical'
-                ? 'Atk' + parseNatureDisplay(p1.nature, 'at')
-                : 'SpA' + parseNatureDisplay(p1.nature, 'sa'),
+            attackerStat: attackerStat,
             attackerItem: p1.item,
+            attackerItemUsed: attackerItemUsed,
             attackerAbility: p1.ability,
+            attackerAbilityUsed: attackerAbilityUsed,
             defender: p2.name,
-            defenderHP: p2.evs.hp,
-            defenderBD: moveCat === 'Physical' ? p2.evs.df : p2.evs.sd,
-            defenderStat:
-              moveCat === 'Physical'
-                ? 'Def' + parseNatureDisplay(p2.nature, 'df')
-                : 'SpD' + parseNatureDisplay(p2.nature, 'sd'),
+            defenderStat: defenderStat.join(' / '),
             defenderItem: p2.item,
+            defenderItemUsed: defenderItemUsed,
             defenderAbility: p2.ability,
+            defenderAbilityUsed: defenderAbilityUsed,
             isSpread: move.isSpread,
             damageRange: [minDamage[jj], maxDamage[jj]],
             percentRange: [minPercent[jj], maxPercent[jj]],
-            kochance: getKOChanceText(
-              result[jj].damage,
-              p1.moves[jj],
-              p2,
-              field.getSide(0),
-              p1.ability === 'Bad Dreams'
-            ),
+            koChance: koChanceText,
+            koValue: koValue,
           };
         }
       }
@@ -314,19 +354,30 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
   Object.values(damageList).forEach((entry) => {
     let row = tbody.insertRow();
     row.innerHTML = `
-      <td style="text-align: right;">${entry.attackerAC} ${entry.attackerStat}</td>
-      <td>${entry.attackerAbility}</td>
-      <td><span class='item-icon' style="${getItemIcon(entry.attackerItem)}" title="${entry.attackerItem}"></span></td>
+      <td style="text-align: right;">${entry.attackerStat}</td>
+      <td>${entry.attackerAbilityUsed ? entry.attackerAbility : ''}</td>
+      <td>
+        <span class='item-icon' 
+          style="${entry.attackerItemUsed ? getItemIcon(entry.attackerItem) : ''}" 
+          title="${entry.attackerItem}">
+        </span>
+      </td>
       <td>${entry.attacker}</td>
       <td>${entry.moveName}${entry.isSpread ? '*' : ''}</td>
       <td>vs.</td>
-      <td style="text-align: right;">${entry.defenderHP} HP / ${entry.defenderBD} ${entry.defenderStat}</td>
-      <td>${entry.defenderAbility}</td>
-      <td><span class='item-icon' style="${getItemIcon(entry.defenderItem)}" title="${entry.defenderItem}"></span></td>
+      <td style="text-align: right;">${entry.defenderStat}</td>
+      <td>${entry.defenderAbilityUsed ? entry.defenderAbility : ''}</td>
+      <td>
+        <span class='item-icon' 
+          style="${entry.defenderItemUsed ? getItemIcon(entry.defenderItem) : ''}" 
+          title="${entry.defenderItem}">
+        </span>
+      </td>
       <td>${entry.defender}</td>
       <td style="text-align: right;">${entry.percentRange[0]}</td><td>-</td><td>${entry.percentRange[1]} %</td>
       <td>(${entry.damageRange[0]}-${entry.damageRange[1]})</td>
-      <td>(${entry.kochance})</td>
+      <td>(${entry.koChance})</td>
+      <td>${entry.koValue}</td>
     `;
   });
 }
