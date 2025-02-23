@@ -26,8 +26,10 @@ function parseInputText(inputText) {
 
   for (let index = 0; index <= 5 && index < blocks.length; index++) {
     const lines = blocks[index].split('\n');
-    const [nameItemLine, ...dataLines] = lines.map((line) => line.trim());
-    const [name, item] = nameItemLine.split(' @ ');
+    const [nameGenderItem, ...dataLines] = lines.map((line) => line.trim());
+    const [nameGender, item] = nameGenderItem.split(' @ ');
+    const [nameRaw, gender] = nameGender.split(/\s?\((M|F)\)/);
+    const name = (nameRaw.match(/\(([^)]+)\)/) || [])[1] || nameRaw; // get rid of the nickname
 
     let ability = '';
     let level = 50; // default set to 50 (different from showdown)
@@ -37,28 +39,27 @@ function parseInputText(inputText) {
     let ivs = {};
     let moves = [];
 
-    dataLines.forEach((line) => {
-      const trimmedLine = line.trim();
-      const splitLine = trimmedLine.split(' ');
+    dataLines.forEach((lineRaw) => {
+      const line = lineRaw.trim();
+      const natureLine = line.match(/^(\w+)\sNature$/);
 
-      if (splitLine.length >= 2 && splitLine[splitLine.length - 1] === 'Nature') {
-        nature = splitLine[0];
+      if (natureLine) {
+        nature = natureLine[1]; // regex group 1
       } else {
-        const [key, value] = trimmedLine.split(':').map((part) => part.trim());
-        const normalizedKey = key.toLowerCase().replace(/\s+/g, '');
+        const [key, value] = line.split(':').map((part) => part.trim());
 
-        if (normalizedKey === 'level') {
-          level = parseInt(value);
-        } else if (normalizedKey === 'evs') {
-          parseStats(value, evs);
-        } else if (normalizedKey === 'ivs') {
-          parseStats(value, ivs);
-        } else if (trimmedLine.startsWith('- ')) {
-          moves.push(trimmedLine.substring(2));
-        } else if (normalizedKey === 'ability') {
+        if (key === 'Ability') {
           ability = value;
-        } else if (normalizedKey === 'teratype') {
+        } else if (key === 'Level') {
+          level = parseInt(value);
+        } else if (key === 'Tera Type') {
           teratype = value;
+        } else if (key === 'EVs') {
+          parseStats(value, evs);
+        } else if (key === 'IVs') {
+          parseStats(value, ivs);
+        } else if (line.startsWith('- ')) {
+          moves.push(line.substring(2));
         }
       }
     });
