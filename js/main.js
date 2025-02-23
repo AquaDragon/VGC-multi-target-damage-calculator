@@ -91,6 +91,3 @@ function inputRandomTeam(inputId) {
   var randInt = Math.floor(Math.random() * samplePastes.length);
   document.getElementById(inputId).value = samplePastes[randInt];
 }
-
-// get rid of lame error message from imports/dmgcalc/ap_calc.js
-function checkaprilfools() {}
