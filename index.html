@@ -27,19 +27,16 @@
         <button id="swapButton" onclick="swapInputValues()">⇄ Swap Teams</button>
         <button id="constructTableButton">Load Teams & Construct Table</button>
         <button id="constructListButton">Load Teams & Generate List</button>
+        <button id="resetOutput">Reset Output Display</button>
+        <p>
+        <div class="system-message" id="systemMessage"><!-- System messages will be displayed here --></div>
         <hr />
       </div>
       <div class="mode-label" id="modeLabel"></div>
-      <div class="system-message" id="systemMessage">
-        <!-- System messages will be displayed here -->
-      </div>
-      <div class="output-row">
-        <div class="output-section">
-          <div id="tableContainer">
-            <!-- The dynamically created table will go here -->
-            <p id="outputText">The output will appear here once the teams have loaded.</p>
-          </div>
-        </div>
+      <div class="team-summary" id="teamSummary"></div>
+      <div class="output-section" id="outputSection">
+          <!-- The dynamically created table will go here -->
+          <p id="outputText">The output will appear here once the teams have loaded.</p>
       </div>
     </div>
 

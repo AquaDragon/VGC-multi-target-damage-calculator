@@ -18,7 +18,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /*  justify-content: center;*/
   min-height: 100vh;
   box-sizing: border-box;
   padding: 20px;
@@ -43,6 +43,8 @@ h1 {
   margin: 10px;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 
 .input-row {
@@ -59,11 +61,6 @@ h1 {
 .text-input {
   width: 100%;
   padding: 2px;
-}
-
-.output-row {
-  display: flex;
-  justify-content: center;
 }
 
 .system-message {

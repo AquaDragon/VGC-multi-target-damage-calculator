@@ -11,6 +11,10 @@ document.getElementById('constructListButton').addEventListener('click', functio
   updateOutput('list');
 });
 
+document.getElementById('resetOutput').addEventListener('click', function () {
+  resetOutput();
+});
+
 function validateInputs() {
   const inputTextA = document.getElementById('textInputA').value;
   const inputTextB = document.getElementById('textInputB').value;

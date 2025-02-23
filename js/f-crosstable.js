@@ -18,8 +18,21 @@ var AT = 'at',
   SP = 'sp',
   SL = 'sl';
 
+function resetOutput() {
+  document.getElementById('teamSummary').innerHTML = '';
+  document.getElementById('modeLabel').innerHTML = '';
+  const systemMessage = document.getElementById('systemMessage');
+  if (systemMessage.innerHTML === 'Output Reset!') {
+    systemMessage.innerHTML = '';
+  } else {
+    systemMessage.innerHTML = 'Output Reset!';
+  }
+  document.getElementById('outputSection').innerHTML =
+    '<p id="outputText">The output will appear here once the teams have loaded.</p>';
+}
+
 /* ------------------------------------------------------------------
-    TABLE calculation functions
+    TABLE MODE functions
    ------------------------------------------------------------------
 */
 function createTable(rows, columns) {
@@ -54,12 +67,13 @@ function updateCell(row, col, content, type) {
 
 // Populate the table with parsed team data
 function populateTable(parsedDataTeamA, parsedDataTeamB) {
-  const tableContainer = document.getElementById('tableContainer');
-  tableContainer.innerHTML = ''; // Clear existing content
+  resetOutput();
+  const outputSection = document.getElementById('outputSection');
+  outputSection.innerHTML = ''; // Clear existing content
 
   // Create a table with rows for Team A and columns for Team B
   const table = createTable(parsedDataTeamA.length, parsedDataTeamB.length);
-  tableContainer.appendChild(table); // Append the table to the container
+  outputSection.appendChild(table); // Append the table to the container
 
   const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA, 'A');
   const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB, 'B');
@@ -101,7 +115,42 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
 }
 
 /* ------------------------------------------------------------------
-    LIST header functions
+    Team Summary (LIST MODE) functions
+   ------------------------------------------------------------------
+*/
+function createSummaryTable(parsedDataTeamB) {
+  const sumTable = document.createElement('table');
+  const sumRow = sumTable.insertRow();
+
+  const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB, 'B');
+
+  for (let col = 0; col < parsedDataTeamB.length; col++) {
+    const sumCell = sumRow.insertCell();
+    sumCell.id = `sumTable${col}`;
+    sumCell.innerHTML = htmlOutputTeamB[col];
+  }
+
+  document.body.appendChild(sumTable);
+  return sumTable;
+}
+
+// currently unused
+function updateSummaryCell(col, content) {
+  const cell = document.getElementById(`sumTable${col}`);
+  if (cell) {
+    cell.innerHTML = content;
+  }
+}
+
+function updateTeamSummary(parsedDataTeamB) {
+  const teamSummaryTable = document.getElementById('teamSummary');
+  teamSummaryTable.innerHTML = '<p>'; // Clear existing content
+
+  teamSummaryTable.appendChild(createSummaryTable(parsedDataTeamB));
+}
+
+/* ------------------------------------------------------------------
+    LIST MODE functions
    ------------------------------------------------------------------
 */
 function createList(rows) {
@@ -221,7 +270,7 @@ function updateSortIcons(headers, col, sortState) {
 }
 
 /* ------------------------------------------------------------------
-    List calculation functions
+    LIST MODE calculation functions
    ------------------------------------------------------------------
 */
 // Checks p1, p2 and field before performing calculation
@@ -342,11 +391,13 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
     }
   }
 
-  const tableContainer = document.getElementById('tableContainer');
-  tableContainer.innerHTML = ''; // Clear existing content
+  updateTeamSummary(parsedDataTeamB);
+
+  const outputSection = document.getElementById('outputSection');
+  outputSection.innerHTML = ''; // Clear existing content
 
   const list = createList(Object.keys(damageList).length); // Get number of entries in damageList
-  tableContainer.appendChild(list);
+  outputSection.appendChild(list);
 
   const tbody = list.tBodies[0]; // Access the table body (tbody)
 
