@@ -183,5 +183,19 @@ function updateFieldTerrain(p1, p2, field) {
   }
 }
 
-// from ap_calc.js > autoSetRuin()
-function checkRuinAbility(p1, p2) {}
+// manually adjust the stats checking for Ruin abilities
+function checkRuinAbility(p1, p2) {
+  const ruinAbilities = {
+    'Tablets of Ruin': 'at',
+    'Vessel of Ruin': 'sa',
+    'Sword of Ruin': 'df',
+    'Beads of Ruin': 'sd',
+  };
+
+  for (const [ability, stat] of Object.entries(ruinAbilities)) {
+    if ([p1.ability, p2.ability].includes(ability)) {
+      if (p1.ability !== ability) p1.stats[stat] *= 0.75;
+      if (p2.ability !== ability) p2.stats[stat] *= 0.75;
+    }
+  }
+}

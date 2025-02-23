@@ -232,7 +232,8 @@ function checkPokeFieldCombos(p1, p2) {
   // generate the field, use default dummy otherwise
   var field = new dummyField();
   updateFieldTerrain(p1, p2, field);
-  // checkRuinAbility(p1, p2); // does not work yet
+  // checkAuraAbility(p1, p2)  // have to add Fairy/Dark Aura and Aura Break
+  checkRuinAbility(p1, p2); // manually adjust the stats checking for Ruin ability
 
   return { p1, p2, field };
 }
