@@ -48,7 +48,7 @@ function formatPokeDisplay(teamData, whichteam) {
         const statName = sub[evName];
 
         // L1: even if EV = 0, display it if poke is attacking & there is a move that uses it
-        if ((mode === 'attack' && whichteam === 'B') || (mode === 'defense' && whichteam === 'A')) {
+        if ((mode === 'attack' && whichteam === 'A') || (mode === 'defense' && whichteam === 'B')) {
           if ((moveCats.includes('Physical') && evName === 'at') || (moveCats.includes('Special') && evName === 'sa')) {
             return `${evValue} ${statName}`;
           }
@@ -56,10 +56,10 @@ function formatPokeDisplay(teamData, whichteam) {
 
         // L2: show relevant non-zero EV stats
         if (
-          (mode === 'attack' && whichteam === 'B' && ['at', 'sa'].includes(evName)) ||
-          (mode === 'attack' && whichteam === 'A' && ['hp', 'df', 'sd'].includes(evName)) ||
-          (mode === 'defense' && whichteam === 'A' && ['at', 'sa'].includes(evName)) ||
-          (mode === 'defense' && whichteam === 'B' && ['hp', 'df', 'sd'].includes(evName))
+          (mode === 'attack' && whichteam === 'A' && ['at', 'sa'].includes(evName)) ||
+          (mode === 'attack' && whichteam === 'B' && ['hp', 'df', 'sd'].includes(evName)) ||
+          (mode === 'defense' && whichteam === 'B' && ['at', 'sa'].includes(evName)) ||
+          (mode === 'defense' && whichteam === 'A' && ['hp', 'df', 'sd'].includes(evName))
         ) {
           return evValue ? `${evValue} ${statName}` : '';
         }
@@ -109,7 +109,7 @@ function formatPokeDisplay(teamData, whichteam) {
         let checkSpecial = '';
 
         if (moveCat) {
-          if ((whichteam === 'B' && mode === 'defense') || (whichteam === 'A' && mode === 'attack')) {
+          if ((whichteam === 'A' && mode === 'defense') || (whichteam === 'B' && mode === 'attack')) {
             checkSpecial = `color: ${moveColor}`;
           } else {
             backgroundStyle = moveCat === 'Status' ? '' : `background-color: ${moveColor}`;
@@ -143,7 +143,7 @@ function formatPokeDisplay(teamData, whichteam) {
 
     // Change what is displayed depending on the team
     let moveDisplayHTML = '';
-    if (whichteam === 'B' || (whichteam === 'A' && mode === 'defense')) {
+    if (whichteam === 'A' || (whichteam === 'B' && mode === 'defense')) {
       moveDisplayHTML = `<div class="move-display">${moveDisplay}</div>`;
     }
 

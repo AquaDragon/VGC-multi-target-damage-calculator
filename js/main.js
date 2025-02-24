@@ -24,10 +24,10 @@ function validateInputs() {
     displaySystemMessage('Please input PokePastes for both teams.', true);
     return;
   } else if (inputTextA.trim() === '') {
-    displaySystemMessage('Please input a PokePaste for the other team.', true);
+    displaySystemMessage('Please input a PokePaste for your team.', true);
     return;
   } else if (inputTextB.trim() === '') {
-    displaySystemMessage('Please input a PokePaste for your team.', true);
+    displaySystemMessage('Please input a PokePaste for the other team.', true);
     return;
   }
 

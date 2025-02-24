@@ -71,27 +71,27 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
   const outputSection = document.getElementById('outputSection');
   outputSection.innerHTML = ''; // Clear existing content
 
-  // Create a table with rows for Team A and columns for Team B
-  const table = createTable(parsedDataTeamA.length, parsedDataTeamB.length);
+  // Create a table with rows for Team B and columns for Team A
+  const table = createTable(parsedDataTeamB.length, parsedDataTeamA.length);
   outputSection.appendChild(table); // Append the table to the container
 
   const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA, 'A');
   const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB, 'B');
 
-  // Populate 1st column with Team A data
-  for (let row = 1; row <= parsedDataTeamA.length; row++) {
-    updateCell(row, 0, htmlOutputTeamA[row - 1], 'table');
+  // Populate 1st row with Team A data
+  for (let col = 1; col <= parsedDataTeamA.length; col++) {
+    updateCell(0, col, htmlOutputTeamA[col - 1], 'table');
   }
 
-  // Populate 1st row with Team B data
-  for (let col = 1; col <= parsedDataTeamB.length; col++) {
-    updateCell(0, col, htmlOutputTeamB[col - 1], 'table');
+  // Populate 1st column with Team B data
+  for (let row = 1; row <= parsedDataTeamB.length; row++) {
+    updateCell(row, 0, htmlOutputTeamB[row - 1], 'table');
   }
 
-  for (let row = 1; row <= parsedDataTeamA.length; row++) {
-    for (let col = 1; col <= parsedDataTeamB.length; col++) {
-      var p1Raw = parsedDataTeamA[row - 1];
-      var p2Raw = parsedDataTeamB[col - 1];
+  for (let row = 1; row <= parsedDataTeamB.length; row++) {
+    for (let col = 1; col <= parsedDataTeamA.length; col++) {
+      var p1Raw = parsedDataTeamA[col - 1];
+      var p2Raw = parsedDataTeamB[row - 1];
 
       const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
 
@@ -118,16 +118,16 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
     Team Summary (LIST MODE) functions
    ------------------------------------------------------------------
 */
-function createSummaryTable(parsedDataTeamB) {
+function createSummaryTable(parsedDataTeamA) {
   const sumTable = document.createElement('table');
   const sumRow = sumTable.insertRow();
 
-  const htmlOutputTeamB = formatPokeDisplay(parsedDataTeamB, 'B');
+  const htmlOutputTeamA = formatPokeDisplay(parsedDataTeamA, 'A');
 
-  for (let col = 0; col < parsedDataTeamB.length; col++) {
+  for (let col = 0; col < parsedDataTeamA.length; col++) {
     const sumCell = sumRow.insertCell();
     sumCell.id = `sumTable${col}`;
-    sumCell.innerHTML = htmlOutputTeamB[col];
+    sumCell.innerHTML = htmlOutputTeamA[col];
   }
 
   document.body.appendChild(sumTable);
@@ -142,11 +142,11 @@ function updateSummaryCell(col, content) {
   }
 }
 
-function updateTeamSummary(parsedDataTeamB) {
+function updateTeamSummary(parsedDataTeamA) {
   const teamSummaryTable = document.getElementById('teamSummary');
   teamSummaryTable.innerHTML = '<p>'; // Clear existing content
 
-  teamSummaryTable.appendChild(createSummaryTable(parsedDataTeamB));
+  teamSummaryTable.appendChild(createSummaryTable(parsedDataTeamA));
 }
 
 /* ------------------------------------------------------------------
@@ -291,10 +291,10 @@ function checkPokeFieldCombos(p1, p2) {
 function populateList(parsedDataTeamA, parsedDataTeamB) {
   const damageList = {};
 
-  for (let row = 0; row < parsedDataTeamA.length; row++) {
-    for (let col = 0; col < parsedDataTeamB.length; col++) {
-      const p1Raw = structuredClone(mode === 'attack' ? parsedDataTeamB[col] : parsedDataTeamA[row]);
-      const p2Raw = structuredClone(mode === 'attack' ? parsedDataTeamA[row] : parsedDataTeamB[col]);
+  for (let row = 0; row < parsedDataTeamB.length; row++) {
+    for (let col = 0; col < parsedDataTeamA.length; col++) {
+      const p1Raw = structuredClone(mode === 'attack' ? parsedDataTeamA[col] : parsedDataTeamB[row]);
+      const p2Raw = structuredClone(mode === 'attack' ? parsedDataTeamB[row] : parsedDataTeamA[col]);
 
       const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
       const { result, maxDamage, minDamage, minPercent, maxPercent } = calculateDamage(p1, p2, field, 'list');
@@ -391,7 +391,7 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
     }
   }
 
-  updateTeamSummary(parsedDataTeamB);
+  updateTeamSummary(parsedDataTeamA);
 
   const outputSection = document.getElementById('outputSection');
   outputSection.innerHTML = ''; // Clear existing content
