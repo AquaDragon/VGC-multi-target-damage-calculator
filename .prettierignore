@@ -1,4 +1,4 @@
 # Exclude files and folders from Prettier formatting
-/imports/dmgcalc/**
+/imports/dmgcalc-NCP/**
 /imports/ps/**
 /js/sample-pastes.js

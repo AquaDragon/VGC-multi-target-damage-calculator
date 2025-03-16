@@ -1,0 +1,3 @@
+[submodule "imports/dmgcalc-NCP"]
+	path = imports/dmgcalc-NCP
+	url = https://github.com/AquaDragon/NCP-VGC-Damage-Calculator.git
