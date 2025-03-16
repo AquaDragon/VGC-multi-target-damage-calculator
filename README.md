@@ -19,7 +19,7 @@ Optimized for VGC formats in Pokémon Scarlet & Violet.
 
 Damage calculations are performed by the scripts from the [VGC Damage Calculator](https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator/) by Nimbasa City Post. 
 
-To maintain version control, a [fork](https://github.com/AquaDragon/NCP-VGC-Damage-Calculator) of the respository was created and is referenced as a submodule in [imports/dmgcalc-NCP](imports/dmgcalc-NCP). 
+To maintain version control, a [fork](https://github.com/AquaDragon/NCP-VGC-Damage-Calculator) of the respository was created and is referenced as a submodule in ``imports/dmgcalc-NCP``. 
 
 - If this is the first time the repository is being set up, run the following command on the command line to initialize the submodule:
 ```
