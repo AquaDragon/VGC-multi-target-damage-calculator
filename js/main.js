@@ -1,13 +1,21 @@
-var mode = 'attack';
-var currentOutputType = 'none';
+const appState = {
+  mode: 'attack',
+  displayStyle: 'none', // table or list
+  activePokeCellID: 0, // integer
+};
+
+const storedData = {
+  teamA: null,
+  teamB: null,
+};
 
 document.getElementById('constructTableButton').addEventListener('click', function () {
-  currentOutputType = 'table';
+  appState.displayStyle = 'table';
   updateOutput('table');
 });
 
 document.getElementById('constructListButton').addEventListener('click', function () {
-  currentOutputType = 'list';
+  appState.displayStyle = 'list';
   updateOutput('list');
 });
 
@@ -31,18 +39,16 @@ function validateInputs() {
     return;
   }
 
-  const parsedDataTeamA = parseInputText(inputTextA);
-  const parsedDataTeamB = parseInputText(inputTextB);
-
-  return { parsedDataTeamA, parsedDataTeamB };
+  storedData.teamA = parseInputText(inputTextA);
+  storedData.teamB = parseInputText(inputTextB);
 }
 
 function updateOutput(type) {
-  const { parsedDataTeamA, parsedDataTeamB } = validateInputs();
+  validateInputs();
   if (type === 'table') {
-    populateTable(parsedDataTeamA, parsedDataTeamB);
+    constructTable(storedData.teamA, storedData.teamB);
   } else if (type === 'list') {
-    populateList(parsedDataTeamA, parsedDataTeamB);
+    constructList(storedData.teamA, storedData.teamB);
   }
 
   updateModeLabel();
@@ -62,18 +68,18 @@ function displaySystemMessage(message, isError = false) {
 
 // Table display functions
 function switchModes() {
-  if (mode === 'attack') {
-    mode = 'defense';
+  if (appState.mode === 'attack') {
+    appState.mode = 'defense';
   } else {
-    mode = 'attack';
+    appState.mode = 'attack';
   }
-  updateOutput(currentOutputType);
+  updateOutput(appState.displayStyle);
 }
 
 function updateModeLabel() {
   const modeLabelElement = document.getElementById('modeLabel');
-  const buttonText = mode === 'attack' ? 'Switch to Defense Mode' : 'Switch to Attack Mode';
-  modeLabelElement.innerHTML = `<b style="font-size: calc(1.2 * 1rem);">${toTitleCase(mode)} Mode</b>
+  const buttonText = appState.mode === 'attack' ? 'Switch to Defense Mode' : 'Switch to Attack Mode';
+  modeLabelElement.innerHTML = `<b style="font-size: calc(1.2 * 1rem);">${toTitleCase(appState.mode)} Mode</b>
   <button id="modeSwitchButton" onclick="switchModes()">↺ ${buttonText}</button>`;
 }
 

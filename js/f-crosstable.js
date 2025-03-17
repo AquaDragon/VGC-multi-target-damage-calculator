@@ -11,7 +11,7 @@ var calculateAllMoves = CALCULATE_ALL_MOVES_SV;
 // var calcHP = CALC_HP_ADV;
 // var calcStat = CALC_STAT_ADV;
 
-var AT = 'at',
+const AT = 'at',
   DF = 'df',
   SA = 'sa',
   SD = 'sd',
@@ -66,7 +66,7 @@ function updateCell(row, col, content, type) {
 }
 
 // Populate the table with parsed team data
-function populateTable(parsedDataTeamA, parsedDataTeamB) {
+function constructTable(parsedDataTeamA, parsedDataTeamB) {
   resetOutput();
   const outputSection = document.getElementById('outputSection');
   outputSection.innerHTML = ''; // Clear existing content
@@ -96,7 +96,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
       const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
 
       let result, maxDamage;
-      if (mode === 'attack') {
+      if (appState.mode === 'attack') {
         ({ result, maxDamage } = calculateDamage(p1, p2, field, 'table'));
       } else {
         ({ result, maxDamage } = calculateDamage(p2, p1, field, 'table'));
@@ -115,7 +115,7 @@ function populateTable(parsedDataTeamA, parsedDataTeamB) {
 }
 
 /* ------------------------------------------------------------------
-    Team Summary (LIST MODE) functions
+    Team Summary Header (LIST MODE) functions
    ------------------------------------------------------------------
 */
 function createSummaryTable(parsedDataTeamA) {
@@ -128,19 +128,37 @@ function createSummaryTable(parsedDataTeamA) {
     const sumCell = sumRow.insertCell();
     sumCell.id = `sumTable${col}`;
     sumCell.innerHTML = htmlOutputTeamA[col];
+
+    // Set default active cell
+    if (col === parseInt(appState.activePokeCellID)) {
+      const innerSumCell = sumCell.querySelector('.display-cell');
+      innerSumCell.classList.add('active');
+    }
   }
 
   document.body.appendChild(sumTable);
   return sumTable;
 }
 
-// currently unused
-function updateSummaryCell(col, content) {
-  const cell = document.getElementById(`sumTable${col}`);
-  if (cell) {
-    cell.innerHTML = content;
+document.addEventListener('click', function (event) {
+  let cell = event.target.closest('.display-cell'); // Find nearest `.display-cell`
+  if (appState.displayStyle === 'list' && cell) {
+    document.querySelectorAll('.display-cell').forEach((c) => c.classList.remove('active')); // Remove active class from all cells
+    cell.classList.add('active');
+
+    appState.activePokeCellID = parseInt(cell.id.replace('dcell', ''), 10); // Extracts number from "dcellX"
+
+    constructList(storedData.teamA, storedData.teamB); // Refresh the list with new active cell
   }
-}
+});
+
+// currently unused
+// function updateSummaryCell(col, content) {
+//   const cell = document.getElementById(`sumTable${col}`);
+//   if (cell) {
+//     cell.innerHTML = content;
+//   }
+// }
 
 function updateTeamSummary(parsedDataTeamA) {
   const teamSummaryTable = document.getElementById('teamSummary');
@@ -288,13 +306,13 @@ function checkPokeFieldCombos(p1, p2) {
   return { p1, p2, field };
 }
 
-function populateList(parsedDataTeamA, parsedDataTeamB) {
+function generateList(parsedDataTeamA, parsedDataTeamB) {
   const damageList = {};
 
   for (let row = 0; row < parsedDataTeamB.length; row++) {
     for (let col = 0; col < parsedDataTeamA.length; col++) {
-      const p1Raw = structuredClone(mode === 'attack' ? parsedDataTeamA[col] : parsedDataTeamB[row]);
-      const p2Raw = structuredClone(mode === 'attack' ? parsedDataTeamB[row] : parsedDataTeamA[col]);
+      const p1Raw = structuredClone(appState.mode === 'attack' ? parsedDataTeamA[col] : parsedDataTeamB[row]);
+      const p2Raw = structuredClone(appState.mode === 'attack' ? parsedDataTeamB[row] : parsedDataTeamA[col]);
 
       const { p1, p2, field } = checkPokeFieldCombos(p1Raw, p2Raw);
       const { result, maxDamage, minDamage, minPercent, maxPercent } = calculateDamage(p1, p2, field, 'list');
@@ -339,36 +357,58 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
         const desc = result[jj].description
           .replace(/Lv\. \d{1,2}|100/g, '') // remove "Lv. XX" (by default all Lv.50)
           .split(' vs. ')
-          .map((part) => part.trim());
+          .map((part) => part.trim()); // [0] = attacker, [1] = defender
 
         const statPattern = /\d+\+?\-?\s*(HP|Atk|Def|SpA|SpD)/g;
         const attackerStat = desc[0].match(statPattern) || [];
         const defenderStat = desc[1].match(statPattern) || [];
 
         // Flags to check if Ability or Item were used in the damage calc
-        const attackerAbilityUsed = !!desc[0].match(p1.ability);
+        let attackerAbilityUsed = !!desc[0].match(p1.ability);
         const attackerItemUsed = !!desc[0].match(p1.item);
-        const defenderAbilityUsed = !!desc[0].match(p2.ability);
-        const defenderItemUsed = !!desc[0].match(p2.item);
+        let defenderAbilityUsed = !!desc[1].match(p2.ability);
+        const defenderItemUsed = !!desc[1].match(p2.item);
 
-        // Define unique key (ID) for each damage calc
         let moveCat = move.name === 'Tera Blast' ? (p1.evs.at > p1.evs.sa ? 'Physical' : 'Special') : move.category;
+
+        // don't log status moves
         if (moveCat !== 'Status') {
-          let atkStatKey = moveCat === 'Physical' ? `${p1.evs.at}A` : `${p1.evs.sa}C`;
-          let defStatKey = moveCat === 'Physical' ? `${p2.evs.df}B` : `${p2.evs.sd}D`;
-          let key = [
-            atkStatKey,
-            p1.name.toLowerCase().replace(/[\s-]+/g, ''),
-            move.name.toLowerCase().replace(/\s+/g, ''),
-            `${p2.evs.hp}H`,
-            defStatKey,
-            p2.name.toLowerCase().replace(/[\s-]+/g, ''),
-          ].join('-');
+          // Use the description to generate a unique key (ID) for each damage calc
+          let key = result[jj].description
+            .replace(/Lv\. \d{1,2}|100/g, '')
+            .replace(/vs\. /g, '')
+            .toLowerCase()
+            .trim()
+            .replace(/\d+[+-]?\s*(hp|atk|def|spa|spd|spe)\b/g, (match, stat) => {
+              return match
+                .replace(/\s*(hp|atk|def|spa|spd|spe)/, (match, stat) => {
+                  return {
+                    hp: 'H',
+                    atk: 'A',
+                    def: 'B',
+                    spa: 'C',
+                    spd: 'D',
+                    spe: 'S',
+                  }[stat];
+                })
+                .replace(/\s+/g, ''); // Remove any spaces left
+            })
+            .replace(/[\s/-]+/g, '-'); // Replaces spaces, slashes, and dashes with '-'
+
+          // manually toggle Ruin ability display in result description
+          if (p1.ability === 'Sword of Ruin' && moveCat === 'Physical' && p2.ability !== 'Sword of Ruin') {
+            attackerAbilityUsed = true;
+          } else if (p1.ability === 'Beads of Ruin' && moveCat === 'Special' && p2.ability !== 'Beads of Ruin') {
+            attackerAbilityUsed = true;
+          } else if (p2.ability === 'Tablets of Ruin' && moveCat === 'Physical' && p1.ability !== 'Tablets of Ruin') {
+            defenderAbilityUsed = true;
+          } else if (p2.ability === 'Vessel of Ruin' && moveCat === 'Special' && p1.ability !== 'Vessel of Ruin') {
+            defenderAbilityUsed = true;
+          }
 
           damageList[key] = {
             attacker: p1.name,
             moveName: move.name,
-            moveCategory: moveCat,
             attackerStat: attackerStat,
             attackerItem: p1.item,
             attackerItemUsed: attackerItemUsed,
@@ -390,25 +430,36 @@ function populateList(parsedDataTeamA, parsedDataTeamB) {
       }
     }
   }
+  return damageList;
+}
 
+function constructList(parsedDataTeamA, parsedDataTeamB) {
   updateTeamSummary(parsedDataTeamA);
 
+  const damageList = generateList(parsedDataTeamA, parsedDataTeamB);
+
+  // Only display damage calcs for the appState.activePokeCellID poke
+  let filteredList = Object.values(damageList).filter((entry) =>
+    appState.mode === 'attack'
+      ? entry.attacker === parsedDataTeamA[appState.activePokeCellID].name
+      : entry.defender === parsedDataTeamA[appState.activePokeCellID].name
+  );
+
+  // Populate the output list
   const outputSection = document.getElementById('outputSection');
   outputSection.innerHTML = ''; // Clear existing content
 
-  const list = createList(Object.keys(damageList).length); // Get number of entries in damageList
-  outputSection.appendChild(list);
+  const outputList = createList(Object.keys(filteredList).length); // Create list based on number of entries in filteredList
+  outputSection.appendChild(outputList);
 
-  const tbody = list.tBodies[0]; // Access the table body (tbody)
-
-  // Populate the rows with data from damageList
-  Object.values(damageList).forEach((entry) => {
-    let row = tbody.insertRow();
+  // Populate the rows with data from filteredList
+  Object.values(filteredList).forEach((entry) => {
+    let row = outputList.tBodies[0].insertRow();
     row.innerHTML = `
       <td style="text-align: right;">${entry.attackerStat}</td>
       <td>${entry.attackerAbilityUsed ? entry.attackerAbility : ''}</td>
       <td>
-        <span class='item-icon' 
+        <span class='item-icon'
           style="${entry.attackerItemUsed ? getItemIcon(entry.attackerItem) : ''}" 
           title="${entry.attackerItem}">
         </span>
