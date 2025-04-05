@@ -1,7 +1,8 @@
 const appState = {
-  mode: 'attack',
-  displayStyle: 'none', // table or list
+  mode: 'attack', // attack, defense
+  displayStyle: 'none', // table, list
   activePokeCellID: 0, // integer
+  listSort: {},
 };
 
 const storedData = {

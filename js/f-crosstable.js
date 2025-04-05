@@ -216,8 +216,6 @@ function createList(rows) {
   return list;
 }
 
-let currentSortState = {}; // Tracks sorting state per column
-
 function sortList(table, col) {
   const tbody = table.tBodies[0];
   const rows = Array.from(tbody.rows);
@@ -232,7 +230,7 @@ function sortList(table, col) {
   }
 
   // Get current sort state (default: ascending)
-  const currentState = currentSortState[targetCol] || 'ascending';
+  const currentState = appState.listSort[targetCol] || 'ascending';
 
   // Sort rows based on current state
   rows.sort((a, b) => {
@@ -247,13 +245,13 @@ function sortList(table, col) {
   });
 
   // Toggle the sort state between 'ascending' and 'descending'
-  currentSortState[col] = currentState === 'ascending' ? 'descending' : 'ascending';
+  appState.listSort[col] = currentState === 'ascending' ? 'descending' : 'ascending';
 
   // Update sorting icons
-  updateSortIcons(table.tHead.rows[0].cells, targetCol, currentSortState[targetCol]);
+  updateSortIcons(table.tHead.rows[0].cells, targetCol, appState.listSort[targetCol]);
 
   // Reverse the order for descending sort
-  if (currentSortState[col] === 'descending') {
+  if (appState.listSort[col] === 'descending') {
     rows.reverse();
   }
 
