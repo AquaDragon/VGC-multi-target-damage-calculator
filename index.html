@@ -23,6 +23,13 @@
             <button class="input-clear-button" onclick="clearTextInput('textInputB')">Clear</button>
             <button class="input-random-team-button" onclick="inputRandomTeam('textInputB')">Input Random Team</button>
           </div>
+          <div class="input-box">
+            <p>Pokémon Showdown ladder:
+            <br><select id="ladder-selection">
+              <option value="">-- Select a file --</option>
+            </select>
+            <p><button id="generateSpeedUsage">Generate Speed Usage Report</button>
+          </div>
         </div>
         <button id="swapButton" onclick="swapInputValues()">⇄ Swap Teams</button>
         <button id="constructTableButton">Load Teams & Construct Table</button>
@@ -55,6 +62,7 @@
     <script src="imports/dmgcalc-NCP/script_res/damage_MASTER.js"></script>
     <script src="imports/dmgcalc-NCP/script_res/damage_SV.js"></script>
     <script src="imports/ps/items.js"></script>
+    <script src="imports/ps/pokedex.js"></script>
     <script src="imports/ps/spritefunc.js"></script>
     <script src="imports/translator.js"></script>
     <script src="js/main.js"></script>
@@ -64,5 +72,7 @@
     <script src="js/f-parsers.js"></script>
     <script src="js/f-poke-info.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/chaos/files.js"></script>
+    <script src="js/chaos/speed-usage.js"></script>
   </body>
 </html>

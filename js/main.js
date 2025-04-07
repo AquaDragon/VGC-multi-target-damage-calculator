@@ -53,7 +53,7 @@ function updateOutput(type) {
   }
 
   updateModeLabel();
-  displaySystemMessage(''); // Clear any previous system messages
+  clearSystemMessage();
 }
 
 function displaySystemMessage(message, isError = false) {
@@ -65,6 +65,10 @@ function displaySystemMessage(message, isError = false) {
   } else {
     systemMessageElement.classList.remove('error');
   }
+}
+
+function clearSystemMessage() {
+  displaySystemMessage(''); // Clear any previous system messages
 }
 
 // Table display functions
